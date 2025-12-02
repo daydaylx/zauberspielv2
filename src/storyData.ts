@@ -50,7 +50,7 @@ export const scenes: Record<string, Scene> = {
     atmosphere: "mystic",
     beschreibung: "Das Licht eurer gebündelten Magie drückt den Schatten zurück. Für einen Moment herrscht Stille, nur euer gemeinsamer Atem füllt das Sanktum. Lira lacht erschöpft, Jorin wischt sich Tinte aus den Augen. Arelis ringt sich ein heiseres 'Gut gemacht' ab.\n\nÜber euch rieseln Staub und lose Buchseiten herab. Die Kathedrale aus schwarzem Stein knarzt, als würde sie neu schreiben, was eben geschah. Der Weg hinaus flimmert wie ein schmaler Steg aus hellem Schimmer.",
     choices: [
-      { text: "Zusammen hinausgehen.", beschreibungFolge: "Drei Hände bleiben verhakt. Ihr tretet in den Schimmer.", naechsteSzeneId: "E4_FREUNDSCHAFT" }
+      { text: "Zusammen hinausgehen.", beschreibungFolge: "Drei Hände bleiben verhakt. Ihr tretet in den Schimmer.", naechsteSzeneId: "EP_start" }
     ]
   },
 
@@ -83,7 +83,7 @@ export const scenes: Record<string, Scene> = {
     atmosphere: "mystic",
     beschreibung: "Die alten Formeln vibrieren noch in der Luft. Runen brennen auf deinen Handflächen nach, Arelis atmet schwer, aber sie steht. Das Buch schläft wieder, doch neue Sigillen leuchten schwach – deine Handschrift mischt sich unter die des Ersten Direktors.\n\nLira zieht dich am Ärmel: 'Beeil dich, bevor es sich anders überlegt.' Jorin hält das Siegelprotokoll fest an sich, als wäre es ein Versprechen.",
     choices: [
-      { text: "Die Halle verlassen, als Hüter.", beschreibungFolge: "Das Siegel summt hinter dir, ein leiser Takt, der dich begleiten wird.", naechsteSzeneId: "E2_SIEGEL_VERANTWORTUNG" }
+      { text: "Die Halle verlassen, als Hüter.", beschreibungFolge: "Das Siegel summt hinter dir, ein leiser Takt, der dich begleiten wird.", naechsteSzeneId: "EP_start" }
     ]
   },
 
@@ -429,10 +429,10 @@ export const scenes: Record<string, Scene> = {
         naechsteSzeneId: "K1_campus_wahl"
       },
       {
-        text: "Versuchen, einen Blick auf den Brief zu werfen. (Wissen)",
-        beschreibungFolge: "Du tust so, als würdest du deinen Federkiel suchen. Auf dem Siegel des Briefes erkennst du ein Symbol: Ein gebrochenes Auge. Darunter steht 'Warnung vor Stufe 5'. Was das wohl bedeutet?",
+        text: "Versuchen, den Brief zu stibitzen. (Wissen)",
+        beschreibungFolge: "Du lässt den Brief in deinen Ärmel gleiten. Es ist kein Brief – es ist eine herausgerissene Tagebuchseite. 'Tag 1: Ich habe das Buch gefunden...', steht darauf.",
         werteAenderung: { wissen: 1 },
-        flagsAenderung: { saw_secret_letter: true },
+        itemBelohnung: "Tagebuchseite 1",
         naechsteSzeneId: "K1_campus_wahl"
       },
       {
@@ -489,8 +489,8 @@ export const scenes: Record<string, Scene> = {
       },
       {
         text: "Mit Wissen beruhigen (Wissen >= 1).",
-        beschreibungFolge: "Du summst eine Melodie, die das Wachstum verlangsamt. Die Blüte öffnet sich und gibt eine Frucht frei.",
-        itemBelohnung: "Leuchtbeere",
+        beschreibungFolge: "Du summst eine Melodie. Die Blüte öffnet sich. Darin liegt keine Frucht, sondern ein vergilbtes Papier: 'Tag 14: Der Schatten spricht zu mir.'",
+        itemBelohnung: "Tagebuchseite 2",
         werteAenderung: { wissen: 1 },
         naechsteSzeneId: "K1_fest_intro",
         condition: (s) => s.wissen >= 1
@@ -514,9 +514,9 @@ export const scenes: Record<string, Scene> = {
     beschreibung: "Der Wind hier oben ist kalt und klar. Du findest Jorin, der durch ein riesiges Teleskop starrt. 'Die Konstellation...', murmelt er. 'Der Drache steht im Haus des Schattens. Das ist seit der Gründung nicht passiert.' Er bemerkt dich und deutet auf eine Karte.",
     choices: [
       {
-        text: "Die Sternenkarte studieren.",
-        beschreibungFolge: "Du prägst dir die Positionen ein. Das könnte bei der Navigation im Dunkeln helfen.",
-        itemBelohnung: "Sternenkarte",
+        text: "Unter der Sternenkarte suchen.",
+        beschreibungFolge: "Unter der Karte klebt ein Zettel. Arelis' Handschrift: 'Tag 40: Ich muss es versiegeln. Auch wenn es mein Herz kostet.'",
+        itemBelohnung: "Tagebuchseite 3",
         werteAenderung: { wissen: 1 },
         naechsteSzeneId: "K1_fest_intro"
       },
@@ -650,7 +650,35 @@ export const scenes: Record<string, Scene> = {
       {
         text: "Den Kopf schütteln und reingehen.",
         beschreibungFolge: "Du verdrängst das Bild. Jetzt zählt nur der Plan.",
-        naechsteSzeneId: "K1_flur_echo"
+        naechsteSzeneId: "K1_stimme_interlude"
+      }
+    ]
+  },
+
+  "K1_stimme_interlude": {
+    id: "K1_stimme_interlude",
+    kapitel: "Zwischenspiel",
+    titel: "Ein Flüstern",
+    atmosphere: "tense",
+    beschreibung: "Du greifst nach der Klinke zum Gemeinschaftsraum. Doch für eine Sekunde gefriert die Luft. Eine Stimme spricht direkt in deinen Kopf:",
+    choices: [
+      {
+        text: "Hinhören...",
+        beschreibungFolge: "Die Stimme kichert. 'Du bist mutig. Aber Mut blutet so leicht.'",
+        naechsteSzeneId: "K1_flur_echo",
+        condition: (s) => s.mut >= s.wissen && s.mut >= s.empathie
+      },
+      {
+        text: "Hinhören...",
+        beschreibungFolge: "Die Stimme raunt. 'Du weißt so viel. Aber weißt du auch, wann du aufhören musst?'",
+        naechsteSzeneId: "K1_flur_echo",
+        condition: (s) => s.wissen > s.mut && s.wissen >= s.empathie
+      },
+      {
+        text: "Hinhören...",
+        beschreibungFolge: "Die Stimme seufzt. 'Du fühlst ihren Schmerz. Das wird dich zerbrechen.'",
+        naechsteSzeneId: "K1_flur_echo",
+        condition: (s) => s.empathie > s.mut && s.empathie > s.wissen
       }
     ]
   },
@@ -1502,12 +1530,59 @@ export const scenes: Record<string, Scene> = {
         beschreibungFolge: "Warum sollten wir ihr helfen? Sie ist der Grund für all das! Du wendest dich ab.",
         condition: (_s, f) => !!f.paranoia_flag,
         naechsteSzeneId: "K5_verrat"
+      },
+      {
+        text: "WAHRES ENDE: Arelis' Tagebuch zitieren.",
+        beschreibungFolge: "Du ziehst die Seiten hervor. 'Du hast es nicht aus Bosheit getan, Arelis. Du wolltest uns schützen!' Deine Worte brechen den Bann der Scham, der den Schatten nährt.",
+        condition: (_s, _f, i) => i.includes("Tagebuchseite 1") && i.includes("Tagebuchseite 2") && i.includes("Tagebuchseite 3"),
+        naechsteSzeneId: "EP_start"
       }
+    ]
+  }
+  "EP_start": {
+    id: "EP_start",
+    kapitel: "Epilog",
+    titel: "Eine Woche später",
+    atmosphere: "dream",
+    beschreibung: "Der Sturm hat sich gelegt. Nareth steht noch. Die Sonne scheint heller als je zuvor auf die Türme.\n\nDu stehst im Innenhof. Das Leben geht weiter, aber alles hat sich verändert.",
+    choices: [
+      {
+        text: "Nach Lira und Jorin sehen.",
+        beschreibungFolge: "Sie sitzen auf der Mauer. Sie winken dir zu. Ihr braucht keine Worte mehr.",
+        naechsteSzeneId: "E4_FREUNDSCHAFT" 
+      },
+      {
+        text: "Kaelen suchen.",
+        beschreibungFolge: "Er steht abseits. Er sieht dich an – diesmal ohne Spott.",
+        naechsteSzeneId: "EP_kaelen",
+        condition: (_s, f) => !!f.kaelen_ally
+      },
+      {
+        text: "Einfach den Frieden genießen. (Spiel beenden)",
+        beschreibungFolge: "Es ist vorbei. Und es war gut.",
+        naechsteSzeneId: "E2_SIEGEL_VERANTWORTUNG"
+      }
+    ]
+  },
+
+  "EP_kaelen": {
+    id: "EP_kaelen",
+    kapitel: "Epilog",
+    titel: "Ein neuer Anfang",
+    atmosphere: "normal",
+    beschreibung: "Kaelen nickt dir zu. 'Nicht übel für einen Anfänger', sagt er. Aber er lächelt dabei. Vielleicht ist das der Beginn einer echten Rivalität – oder Freundschaft.",
+    choices: [
+      { text: "Grinsen und gehen.", naechsteSzeneId: "E4_FREUNDSCHAFT" }
     ]
   }
 };
 
 export const endings: Record<string, Ending> = {
+  "E6_TRUE_ENDING": {
+    id: "E6_TRUE_ENDING",
+    titel: "Der Kreis schließt sich",
+    beschreibung: "Arelis bricht weinend zusammen, aber der Schatten löst sich auf – nicht durch Gewalt, sondern durch Verständnis. Du hast nicht nur die Schule gerettet, sondern auch die Seele deiner Lehrerin geheilt. Sie tritt zurück und übergibt dir die Leitung der Bibliothek. Diesmal aber als Ort des Wissens, nicht der Angst."
+  },
   "E1_RETTUNG_VERLUST": {
     id: "E1_RETTUNG_VERLUST",
     titel: "Das Opfer des Wissens",
