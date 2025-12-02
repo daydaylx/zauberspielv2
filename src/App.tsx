@@ -6,6 +6,7 @@ import { EndingView } from './components/EndingView';
 import { StartScreen } from './components/StartScreen';
 import { HeaderBar } from './components/HeaderBar';
 import { OverlayMenu } from './components/OverlayMenu';
+import { AtmosphereEffects } from './components/AtmosphereEffects';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>(gameEngine.getState());
@@ -48,6 +49,9 @@ function App() {
   return (
     <div className="w-full min-h-screen bg-midnight text-ink overflow-hidden relative font-serif selection:bg-accent selection:text-midnight">
       
+      {/* Hintergrund-Effekte */}
+      <AtmosphereEffects type={currentScene?.atmosphere} />
+
       {/* Global Header (nur im Spiel sichtbar) */}
       {view === 'game' && (
         <HeaderBar 
