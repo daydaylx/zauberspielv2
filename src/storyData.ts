@@ -592,24 +592,68 @@ export const scenes: Record<string, Scene> = {
         text: "Lira eine Laterne schenken.",
         beschreibungFolge: "Sie fängt das Licht und wird rot. 'Danke... ist nicht mein Stil, aber... hübsch.'",
         flagsAenderung: { romance_lira: true },
-        naechsteSzeneId: "K1_flur_echo"
+        naechsteSzeneId: "K1_traum_start"
       },
       {
         text: "Mit Jorin über die Sterne reden.",
         beschreibungFolge: "Er strahlt mehr als die Laternen. 'Siehst du? Sie leiten uns.' Ein Moment tiefer Verbundenheit.",
         flagsAenderung: { romance_jorin: true },
-        naechsteSzeneId: "K1_flur_echo"
+        naechsteSzeneId: "K1_traum_start"
       },
       {
         text: "Allein die Ruhe genießen.",
         beschreibungFolge: "Du sammelst dich. Dein Geist ist klar wie Kristall.",
         werteAenderung: { wissen: 1, mut: 1 },
-        naechsteSzeneId: "K1_flur_echo"
+        naechsteSzeneId: "K1_traum_start"
       }
     ]
   },
 
-  "K1_flur_echo": {
+  "K1_traum_start": {
+    id: "K1_traum_start",
+    kapitel: "Zwischenspiel",
+    titel: "Die schwarze Bibliothek",
+    atmosphere: "dream",
+    beschreibung: "Die Musik des Fests verblasst. Die Laternen erlöschen nicht, sie tropfen – wie schwarze Tinte – auf dich herab. Plötzlich stehst du nicht mehr im Innenhof, sondern in einer unendlichen Halle aus dunklem Wasser. Bücherregale ragen wie Riffe aus der Tiefe.\n\nEine Stimme, weder männlich noch weiblich, hallt überall und nirgends: 'Warum suchst du mich? Warum störst du meinen Schlaf?'",
+    choices: [
+      {
+        text: "Für meine Freunde. Ich will sie beschützen.",
+        beschreibungFolge: "Das Wasser wird warm. 'Loyalität... ein starker Schild, aber eine schwere Kette.'",
+        flagsAenderung: { motivation_friends: true },
+        werteAenderung: { empathie: 1 },
+        naechsteSzeneId: "K1_traum_ende"
+      },
+      {
+        text: "Ich will Macht. Niemand soll mich mehr herumschubsen.",
+        beschreibungFolge: "Das Wasser kocht. 'Ehrgeiz... die Tinte liebt den Ehrgeiz.'",
+        flagsAenderung: { motivation_power: true },
+        werteAenderung: { mut: 1 },
+        naechsteSzeneId: "K1_traum_ende"
+      },
+      {
+        text: "Ich will die Wahrheit verstehen.",
+        beschreibungFolge: "Das Wasser wird klar wie Glas. 'Neugier... der Schlüssel zu allen Türen, auch zu denen, die besser geschlossen blieben.'",
+        flagsAenderung: { motivation_knowledge: true },
+        werteAenderung: { wissen: 1 },
+        naechsteSzeneId: "K1_traum_ende"
+      }
+    ]
+  },
+
+  "K1_traum_ende": {
+    id: "K1_traum_ende",
+    kapitel: "Zwischenspiel",
+    titel: "Erwachen",
+    atmosphere: "mystic",
+    beschreibung: "Du schreckst hoch. Du stehst wieder im Flur vor dem Gemeinschaftsraum. Deine Hände sind trocken, aber du schmeckst noch immer Salz und Tinte auf der Zunge.\n\nWar das eine Warnung? Oder eine Einladung? Die Realität fühlt sich plötzlich dünner an.",
+    choices: [
+      {
+        text: "Den Kopf schütteln und reingehen.",
+        beschreibungFolge: "Du verdrängst das Bild. Jetzt zählt nur der Plan.",
+        naechsteSzeneId: "K1_flur_echo"
+      }
+    ]
+  },
     id: "K1_flur_echo",
     kapitel: "Kapitel 1",
     titel: "Tintenfinger im Flur",
@@ -856,12 +900,12 @@ export const scenes: Record<string, Scene> = {
     atmosphere: "tense",
     beschreibung: "Ihr huscht von Säule zu Säule. Plötzlich – ein Lichtkegel! Schritte hallen auf dem Steinboden.\n\n'Versteck!', zischt Lira. Ihr drückt euch in eine Nische hinter einer Statue des Gründers. Der Hausmeister schlurft vorbei, seine Laterne wirft lange, tanzende Schatten. Er bleibt kurz stehen, schnuppert in die Luft... und geht weiter.\n\nDein Herz hämmert gegen deine Rippen. Das war knapp.",
     choices: [
-      { text: "Weiteratmen und los.", beschreibungFolge: "Ihr wartet noch eine Sekunde, dann sprintet ihr zum Eingang des Westflügels.", naechsteSzeneId: "K2_bibliothek_start" },
+      { text: "Weiteratmen und los.", beschreibungFolge: "Ihr wartet noch eine Sekunde, dann sprintet ihr zum Eingang des Westflügels.", naechsteSzeneId: "K2_kaelen_intercept" },
       {
         text: "Pebble werfen, um Filch abzulenken.",
         beschreibungFolge: "Du schleuderst einen Kiesel in den Seitengang. Die Laterne schwenkt, Schritte folgen dem Geräusch.",
         flagsAenderung: { distracted_filch: true },
-        naechsteSzeneId: "K2_bibliothek_start"
+        naechsteSzeneId: "K2_kaelen_intercept"
       }
     ]
   },
@@ -873,19 +917,56 @@ export const scenes: Record<string, Scene> = {
     atmosphere: "tense",
     beschreibung: "Es ist eng. Es ist dunkel. Und es riecht nach Jahrhunderte altem Staub. Ihr kriecht auf Händen und Kneen.\n\n'Iiiiih', macht Lira leise, als sie in ein Spinnennetz fasst. Jorin murmelt beruhigende Formeln vor sich hin, um die Panik zu unterdrücken.\n\nDoch der Weg ist sicher. Ihr kommt hinter einem Wandteppich heraus, direkt vor dem Eingang zum Westflügel. Ihr seid zwar staubbedeckt, aber unentdeckt.",
     choices: [
-      { text: "Den Staub abklopfen.", beschreibungFolge: "Lira zieht eine tote Spinne aus ihren Haaren. 'Nie wieder', flüstert sie.", naechsteSzeneId: "K2_bibliothek_start" },
+      { text: "Den Staub abklopfen.", beschreibungFolge: "Lira zieht eine tote Spinne aus ihren Haaren. 'Nie wieder', flüstert sie.", naechsteSzeneId: "K2_kaelen_intercept" },
       {
         text: "Spinne zerdrücken. (Mut)",
         beschreibungFolge: "Ein leises Knacken. Jorin verzieht das Gesicht, aber der Tunnel riecht jetzt weniger nach Angst.",
         werteAenderung: { mut: 1 },
         flagsAenderung: { killed_spider: true },
-        naechsteSzeneId: "K2_bibliothek_start"
+        naechsteSzeneId: "K2_kaelen_intercept"
       },
       {
         text: "Jorin beruhigen. (Empathie)",
         beschreibungFolge: "Du legst ihm die Hand auf den Rücken. 'Noch drei Meter.' Seine Atmung wird ruhiger.",
         werteAenderung: { empathie: 1 },
         flagsAenderung: { calmed_jorin_tunnel: true },
+        naechsteSzeneId: "K2_kaelen_intercept"
+      }
+    ]
+  },
+
+  "K2_kaelen_intercept": {
+    id: "K2_kaelen_intercept",
+    kapitel: "Kapitel 2",
+    titel: "Schatten im Weg",
+    atmosphere: "tense",
+    beschreibung: "Ihr tretet aus dem Dunkel auf den Korridor vor dem Westflügel. Doch der Weg ist versperrt.\n\nKaelen lehnt lässig an der Wand, den Zauberstab in der Hand. Er wirkt nicht überrascht. 'Habe ich es mir doch gedacht', flüstert er. 'Die kleinen Helden auf großer Mission.'\n\nLira spannt sich an. Kaelen hebt den Stab. 'Ich könnte jetzt Alarm schlagen. Arelis würde mich belohnen. Es sei denn... ihr macht mir ein besseres Angebot.'",
+    choices: [
+      {
+        text: "Duellieren: 'Aus dem Weg, Kaelen.' (Mut >= 1)",
+        beschreibungFolge: "Ein kurzer, harter Kampf. Du entwaffnest ihn mit einem schnellen Spruch. Er stolpert zurück, beeindruckt und wütend. 'Das... war Glück.' Er verschwindet.",
+        werteAenderung: { mut: 1 },
+        naechsteSzeneId: "K2_bibliothek_start",
+        condition: (s) => s.mut >= 1
+      },
+      {
+        text: "Appell an seinen Ehrgeiz (Respekt).",
+        beschreibungFolge: "Du erinnerst ihn an das Fest. 'Wir suchen das Schattenbuch. Wenn wir es finden, teilen wir den Ruhm.' Er zögert. 'Na gut. Aber ich will das erste Kapitel lesen.' Er lässt euch passieren.",
+        flagsAenderung: { kaelen_ally: true },
+        naechsteSzeneId: "K2_bibliothek_start",
+        condition: (_s, f) => !!f.public_respect
+      },
+      {
+        text: "Bestechen (Schlafpuder).",
+        beschreibungFolge: "Du wirfst ihm den Beutel zu. 'Hier. Alchemisten zahlen gut dafür.' Er fängt ihn, grinst und tritt beiseite.",
+        itemVerlust: "Schlafpuder",
+        naechsteSzeneId: "K2_bibliothek_start",
+        condition: (_s, _f, i) => i.includes("Schlafpuder")
+      },
+      {
+        text: "Bluffen: 'Arelis weiß Bescheid.' (Wissen)",
+        beschreibungFolge: "Er blinzelt unsicher. 'Wirklich?' Das Risiko ist ihm zu hoch. Er zieht ab.",
+        werteAenderung: { wissen: 1 },
         naechsteSzeneId: "K2_bibliothek_start"
       }
     ]
@@ -1166,25 +1247,84 @@ export const scenes: Record<string, Scene> = {
         beschreibungFolge: "Lira sieht dich an, Angst und Entschlossenheit im Blick. Sie legt ihre Hand auf deine. Jorin legt seine zitternde Hand darauf. 'Zusammen', flüstert er. Die Magie zwischen euch verdichtet sich zu einem fast greifbaren Schild.", 
         werteAenderung: { empathie: 2 },
         flagsAenderung: { loyalty_max: true },
-        naechsteSzeneId: "K3_schattenbuch" 
+        naechsteSzeneId: "K3_nebel_start" 
       },
       {
         text: "Lira fragen: 'Bereit für den größten Ärger unseres Lebens?'",
         beschreibungFolge: "Ein echtes, wildes Grinsen bricht durch ihre Angst. 'Immer. Solange du mir den Rücken freihältst.'",
         flagsAenderung: { lira_ready: true },
-        naechsteSzeneId: "K3_schattenbuch"
+        naechsteSzeneId: "K3_nebel_start"
       },
       {
         text: "Jorin fragen: 'Was sagt die Theorie über das Überleben?'",
         beschreibungFolge: "Er schluckt. 'Statistisch gesehen schlecht. Aber Ausnahmen bestätigen die Regel.' Er strafft die Schultern.",
         werteAenderung: { wissen: 1 },
-        naechsteSzeneId: "K3_schattenbuch"
+        naechsteSzeneId: "K3_nebel_start"
       },
-      { text: "Wortlos die Tür öffnen. Fokus.", beschreibungFolge: "Keine Worte mehr. Nur noch Tat.", naechsteSzeneId: "K3_schattenbuch" },
+      { text: "Wortlos die Tür öffnen. Fokus.", beschreibungFolge: "Keine Worte mehr. Nur noch Tat.", naechsteSzeneId: "K3_nebel_start" },
       {
         text: "Amulett gegen die Tinte halten.",
         beschreibungFolge: "Das Amulett glimmt; die Tintenfäden weichen kurz, als hätten sie Respekt.",
         flagsAenderung: { amulet_tuned: true },
+        naechsteSzeneId: "K3_nebel_start"
+      }
+    ]
+  },
+
+  "K3_nebel_start": {
+    id: "K3_nebel_start",
+    kapitel: "Kapitel 3",
+    titel: "Der Nebel der Vergangenheit",
+    atmosphere: "somber",
+    beschreibung: "Die Tür zum Sanktum schwingt auf, doch dahinter liegt kein Raum, sondern dichter, grauer Nebel. Stimmen flüstern darin.\n\n'Vorsicht', warnt Jorin, aber seine Stimme klingt weit weg. 'Das ist eine psychomimetische Barriere. Sie liest unsere Erinnerungen.'\n\nPlötzlich schreit Lira auf. Der Nebel hat sie gepackt.",
+    choices: [
+      {
+        text: "Lira folgen! Wir lassen niemanden zurück.",
+        beschreibungFolge: "Du stürzt dich in den grauen Dunst.",
+        naechsteSzeneId: "K3_lira_trial"
+      }
+    ]
+  },
+
+  "K3_lira_trial": {
+    id: "K3_lira_trial",
+    kapitel: "Kapitel 3",
+    titel: "Liras Prüfung",
+    atmosphere: "danger",
+    beschreibung: "Du findest Lira am Boden. Über ihr steht eine schemenhafte Gestalt – ein großer Mann in Wächter-Robe.\n\n'Schwach', dröhnt die Gestalt. 'Genau wie deine Mutter. Du wirst Nareth brennen sehen.' Lira wimmert und hält sich die Ohren zu. 'Es stimmt', schluchzt sie. 'Ich bin schuld.'",
+    choices: [
+      {
+        text: "Empathie: 'Das ist nicht dein Vater, Lira! Das ist nur Angst!'",
+        beschreibungFolge: "Deine Stimme durchschneidet die Illusion. Lira hebt den Kopf. 'Du... hast recht.' Sie steht auf und schlägt nach dem Schatten. Er verpufft.",
+        werteAenderung: { empathie: 1 },
+        naechsteSzeneId: "K3_jorin_trial"
+      },
+      {
+        text: "Angriff: Den Schatten mit Magie attackieren.",
+        beschreibungFolge: "Du feuerst einen Lichtblitz ab. Der Schatten weicht zurück, aber Lira ist immer noch erschüttert.",
+        flagsAenderung: { party_trauma: true },
+        naechsteSzeneId: "K3_jorin_trial"
+      }
+    ]
+  },
+
+  "K3_jorin_trial": {
+    id: "K3_jorin_trial",
+    kapitel: "Kapitel 3",
+    titel: "Jorins Prüfung",
+    atmosphere: "somber",
+    beschreibung: "Kaum ist Lira frei, siehst du Jorin. Er starrt auf ein brennendes Buch, das im Nebel schwebt. 'Ich habe es falsch berechnet', murmelt er manisch. 'Die Formel... alle sind tot wegen mir.' Er greift nach einem Dolch, um 'den Fehler zu korrigieren'.",
+    choices: [
+      {
+        text: "Logik: 'Jorin! Schau auf die Variablen! Das ist nicht deine Handschrift!'",
+        beschreibungFolge: "Er blinzelt. Er rückt seine Brille zurecht. 'Tatsächlich... der Koeffizient ist falsch.' Das Feuer erlischt. Er atmet tief durch.",
+        werteAenderung: { wissen: 1 },
+        naechsteSzeneId: "K3_schattenbuch"
+      },
+      {
+        text: "Ihm den Dolch aus der Hand schlagen.",
+        beschreibungFolge: "Der Dolch klirrt zu Boden. Jorin zittert am ganzen Leib. 'Danke', flüstert er, aber er wirkt gebrochen.",
+        flagsAenderung: { party_trauma: true },
         naechsteSzeneId: "K3_schattenbuch"
       }
     ]
