@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-midnight text-ink font-serif overflow-hidden;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-2 bg-accent text-midnight font-bold rounded hover:bg-accent-light transition-colors duration-300 font-title tracking-widest uppercase text-sm;
+  }
+  
+  .glass-panel {
+    @apply bg-black/60 backdrop-blur-md border border-white/10;
+  }
+}
+
+/* Custom Scrollbar für das Buch */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Schreibmaschinen-Cursor (optional, falls gewünscht) */
+.typing-cursor::after {
+  content: '|';
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Buch-Schatten für 3D Effekt */
+.book-shadow {
+  box-shadow: 
+    0 20px 30px -10px rgba(0,0,0,0.5),
+    0 0 20px rgba(0,0,0,0.3) inset;
+}
+
+.page-texture {
+  background-color: #f4e4bc;
+  background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23d9c8a0' fill-opacity='0.4'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
