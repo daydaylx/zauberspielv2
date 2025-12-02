@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ChoiceList } from './ChoiceList';
@@ -31,12 +30,15 @@ describe('ChoiceList Component', () => {
     render(<ChoiceList choices={sampleChoices} onChoice={mockOnChoice} />);
     
     // Sucht nach dem Text der Belohnung
-    const rewardElement = screen.getByText('Goldener Schlüssel');
-    expect(rewardElement).toBeInTheDocument();
+    const rewardTextElement = screen.getByText('Goldener Schlüssel');
+    expect(rewardTextElement).toBeInTheDocument();
     
-    // Prüft, ob das Element das erwartete Styling für Belohnungen hat (grob über Klassen)
-    // Da wir Tailwind Klassen haben, können wir prüfen ob das Parent die Farben hat
-    expect(rewardElement.closest('div')).toHaveClass('text-amber-700');
+    // Sucht nach dem umgebenden Span-Element, das die neuen Klassen hat
+    const rewardWrapper = rewardTextElement.closest('span');
+    expect(rewardWrapper).toBeInTheDocument();
+    expect(rewardWrapper).toHaveClass('text-amber-800/80');
+    // Optional: Prüfen, ob das Icon vorhanden ist
+    expect(rewardWrapper).toHaveTextContent('⚱ Goldener Schlüssel');
   });
 
   it('calls onChoice when a button is clicked', () => {

@@ -64,8 +64,8 @@ const StoryView: React.FC<StoryViewProps> = ({ scene, stats, flags, inventory, o
   );
 
   const RightPage = (
-    <div className="h-full flex flex-col">
-      <div className="flex-grow overflow-y-auto scrollbar-hide pr-2">
+    <div className="h-full flex flex-col animate-ink-in">
+      <div className="flex-grow overflow-y-auto scrollbar-custom pr-2">
         <TypewriterText 
             text={scene.beschreibung} 
             speed={settings.textSpeed} 

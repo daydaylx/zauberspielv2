@@ -69,7 +69,7 @@ describe('New Story Features', () => {
     engine.makeChoice(searchChoice);
 
     expect(engine.getState().inventory).toContain("Skizze des Schachts");
-    expect(engine.getState().currentSceneId).toBe("K1_flur_echo");
+    expect(engine.getState().currentSceneId).toBe("K1_campus_wahl");
   });
 
   it('should allow the loyalty oath (Schwur) in K2', () => {

@@ -682,6 +682,8 @@ export const scenes: Record<string, Scene> = {
       }
     ]
   },
+
+  "K1_flur_echo": {
     id: "K1_flur_echo",
     kapitel: "Kapitel 1",
     titel: "Tintenfinger im Flur",
@@ -1538,7 +1540,8 @@ export const scenes: Record<string, Scene> = {
         naechsteSzeneId: "EP_start"
       }
     ]
-  }
+  },
+
   "EP_start": {
     id: "EP_start",
     kapitel: "Epilog",
