@@ -426,24 +426,184 @@ export const scenes: Record<string, Scene> = {
         beschreibungFolge: "Sie schreckt fast zusammen. Ihr Blick wird scharf. 'Neugier ist eine gefährliche Eigenschaft in Nareth', sagt sie kühl. 'Aber... danke der Nachfrage. Geh nun.'",
         werteAenderung: { empathie: 1 },
         flagsAenderung: { arelis_suspcicious: true },
-        naechsteSzeneId: "K1_flur_echo"
+        naechsteSzeneId: "K1_campus_wahl"
       },
       {
         text: "Versuchen, einen Blick auf den Brief zu werfen. (Wissen)",
         beschreibungFolge: "Du tust so, als würdest du deinen Federkiel suchen. Auf dem Siegel des Briefes erkennst du ein Symbol: Ein gebrochenes Auge. Darunter steht 'Warnung vor Stufe 5'. Was das wohl bedeutet?",
         werteAenderung: { wissen: 1 },
         flagsAenderung: { saw_secret_letter: true },
-        naechsteSzeneId: "K1_flur_echo"
+        naechsteSzeneId: "K1_campus_wahl"
       },
       {
         text: "Unter Liras Tisch nachsehen.",
         beschreibungFolge: "Bevor du gehst, bückst du dich. Lira hat etwas in das Holz geritzt: Keine Beleidigung, sondern eine Skizze. Es sieht aus wie der Plan eines Lüftungsschachts.",
         itemBelohnung: "Skizze des Schachts",
-        naechsteSzeneId: "K1_flur_echo"
+        naechsteSzeneId: "K1_campus_wahl"
       },
       {
         text: "Einfach gehen. Nicht auffallen.",
         beschreibungFolge: "Besser keinen Ärger riskieren. Du schließt dich dem Strom der Schüler an.",
+        naechsteSzeneId: "K1_campus_wahl"
+      }
+    ]
+  },
+
+  "K1_campus_wahl": {
+    id: "K1_campus_wahl",
+    kapitel: "Kapitel 1 - Nachmittag",
+    titel: "Freie Stunden",
+    atmosphere: "normal",
+    beschreibung: "Der Nachmittag gehört dir. Die Sonne steht tief über den Türmen von Nareth und taucht den Campus in goldenes Licht. Du hast Zeit für eine Aktivität, bevor die Abenddämmerung – und damit die Vorbereitung für die Nacht – beginnt.",
+    choices: [
+      {
+        text: "Das Gewächshaus untersuchen (Gefahr & Zutaten).",
+        beschreibungFolge: "Ein süßlicher, schwerer Duft weht aus dem gläsernen Bau herüber.",
+        naechsteSzeneId: "K1_gewaechshaus"
+      },
+      {
+        text: "Den Astronomieturm erklimmen (Jorin suchen).",
+        beschreibungFolge: "Die höchste Spitze der Akademie. Dort ist es ruhig.",
+        naechsteSzeneId: "K1_astronomie"
+      },
+      {
+        text: "Direkt zum Gemeinschaftsraum.",
+        beschreibungFolge: "Du willst keine Zeit verschwenden.",
+        naechsteSzeneId: "K1_fest_intro"
+      }
+    ]
+  },
+
+  "K1_gewaechshaus": {
+    id: "K1_gewaechshaus",
+    kapitel: "Kapitel 1",
+    titel: "Der Garten der Flüsterpflanzen",
+    atmosphere: "mystic",
+    beschreibung: "Die Luft hier drinnen ist feucht und warm. Seltsame Pflanzen mit violetten Adern winden sich an den Säulen empor. In der Mitte des Raumes siehst du einen Tisch mit alchemistischen Zutaten, doch der Weg ist von einer 'Schlaf-Lilie' versperrt. Sie bewegt sich leicht, als würde sie atmen.",
+    choices: [
+      {
+        text: "Vorsichtig vorbeischleichen.",
+        beschreibungFolge: "Du hältst den Atem an. Die Pflanze zuckt, aber du bist leise genug.",
+        itemBelohnung: "Schlafpuder",
+        naechsteSzeneId: "K1_fest_intro"
+      },
+      {
+        text: "Mit Wissen beruhigen (Wissen >= 1).",
+        beschreibungFolge: "Du summst eine Melodie, die das Wachstum verlangsamt. Die Blüte öffnet sich und gibt eine Frucht frei.",
+        itemBelohnung: "Leuchtbeere",
+        werteAenderung: { wissen: 1 },
+        naechsteSzeneId: "K1_fest_intro",
+        condition: (s) => s.wissen >= 1
+      },
+      {
+        text: "Gewalt anwenden (Mut).",
+        beschreibungFolge: "Du schlägst die Ranken beiseite. Die Pflanze stäubt dir Pollen ins Gesicht, aber du ergatterst das Puder.",
+        itemBelohnung: "Schlafpuder",
+        flagsAenderung: { covered_in_pollen: true },
+        werteAenderung: { mut: 1 },
+        naechsteSzeneId: "K1_fest_intro"
+      }
+    ]
+  },
+
+  "K1_astronomie": {
+    id: "K1_astronomie",
+    kapitel: "Kapitel 1",
+    titel: "Dem Himmel so nah",
+    atmosphere: "dream",
+    beschreibung: "Der Wind hier oben ist kalt und klar. Du findest Jorin, der durch ein riesiges Teleskop starrt. 'Die Konstellation...', murmelt er. 'Der Drache steht im Haus des Schattens. Das ist seit der Gründung nicht passiert.' Er bemerkt dich und deutet auf eine Karte.",
+    choices: [
+      {
+        text: "Die Sternenkarte studieren.",
+        beschreibungFolge: "Du prägst dir die Positionen ein. Das könnte bei der Navigation im Dunkeln helfen.",
+        itemBelohnung: "Sternenkarte",
+        werteAenderung: { wissen: 1 },
+        naechsteSzeneId: "K1_fest_intro"
+      },
+      {
+        text: "Mit Jorin über seine Ängste reden.",
+        beschreibungFolge: "'Ich habe Angst, dass ich versage', sagt er. 'Aber hier oben wirken Probleme so klein.'",
+        werteAenderung: { empathie: 1 },
+        flagsAenderung: { jorin_loyalty_boost: true },
+        naechsteSzeneId: "K1_fest_intro"
+      }
+    ]
+  },
+
+  "K1_fest_intro": {
+    id: "K1_fest_intro",
+    kapitel: "Kapitel 1 - Abend",
+    titel: "Das Fest der Lichter",
+    atmosphere: "dream",
+    beschreibung: "Als du den Innenhof betrittst, hat die Dämmerung eingesetzt. Tausende kleiner, magischer Laternen schweben in der Luft wie ein zweiter Sternenhimmel. Schüler lachen, Musik spielt. Es ist eine seltene Pause vom strengen Drill.\n\nDoch die Idylle trügt. Kaelen steht inmitten einer Gruppe von Bewunderern und erzählt lautstark eine Geschichte – und er deutet direkt auf dich.",
+    choices: [
+      {
+        text: "Hingehen und ihn konfrontieren. (Mut)",
+        beschreibungFolge: "Du drängst dich durch die Menge. Die Musik scheint leiser zu werden.",
+        werteAenderung: { mut: 1 },
+        naechsteSzeneId: "K1_fest_kaelen"
+      },
+      {
+        text: "Lieber Abstand halten und Lira suchen.",
+        beschreibungFolge: "Du weichst aus, doch Kaelen ruft laut: 'Seht mal, wer sich da versteckt!' Es gibt kein Entkommen.",
+        naechsteSzeneId: "K1_fest_kaelen"
+      }
+    ]
+  },
+
+  "K1_fest_kaelen": {
+    id: "K1_fest_kaelen",
+    kapitel: "Kapitel 1",
+    titel: "Öffentliches Theater",
+    atmosphere: "tense",
+    beschreibung: "Kaelen grinst herablassend. 'Unser Neuzugang! Hat sich heute Nachmittag sicher im Staub verkrochen.'\n\nEr mustert dich. Wenn du Pollen im Gesicht hast (vom Gewächshaus), lacht er: 'Seht nur! Hat wohl mit Blumen gekämpft und verloren!' Die Menge kichert.",
+    choices: [
+      {
+        text: "Konter: 'Ich habe wenigstens keine Angst vor Schmutz.' (Mut)",
+        beschreibungFolge: "Ein Raunen geht durch die Menge. Kaelens Lächeln gefriert. 'Mutig', zischt er. 'Aber dumm.'",
+        werteAenderung: { mut: 1 },
+        flagsAenderung: { public_respect: true },
+        naechsteSzeneId: "K1_fest_moment"
+      },
+      {
+        text: "Witz: 'Besser Pollen als deine Parfümwolke.' (Empathie)",
+        beschreibungFolge: "Lira lacht laut auf. Die Spannung bricht, und Kaelen steht als der Eitle da.",
+        werteAenderung: { empathie: 1 },
+        flagsAenderung: { public_respect: true },
+        naechsteSzeneId: "K1_fest_moment"
+      },
+      {
+        text: "Schweigend weggehen. (Stolz)",
+        beschreibungFolge: "Du lässt ihn einfach stehen. Das ist vielleicht die stärkste Antwort. Kaelen wirkt irritiert, dass sein Publikum geht.",
+        werteAenderung: { wissen: 1 },
+        naechsteSzeneId: "K1_fest_moment"
+      }
+    ]
+  },
+
+  "K1_fest_moment": {
+    id: "K1_fest_moment",
+    kapitel: "Kapitel 1",
+    titel: "Ein ruhiger Moment",
+    atmosphere: "mystic",
+    beschreibung: "Der Trubel hat sich gelegt. Du stehst am Rand des Hofes, eine schwebende Laterne direkt über dir. Lira lehnt an einer Säule und beobachtet dich. Jorin sortiert nervös sein Besteck am Buffet.\n\nEs ist der letzte ruhige Moment, bevor ihr euch im Gemeinschaftsraum trefft.",
+    choices: [
+      {
+        text: "Lira eine Laterne schenken.",
+        beschreibungFolge: "Sie fängt das Licht und wird rot. 'Danke... ist nicht mein Stil, aber... hübsch.'",
+        flagsAenderung: { romance_lira: true },
+        naechsteSzeneId: "K1_flur_echo"
+      },
+      {
+        text: "Mit Jorin über die Sterne reden.",
+        beschreibungFolge: "Er strahlt mehr als die Laternen. 'Siehst du? Sie leiten uns.' Ein Moment tiefer Verbundenheit.",
+        flagsAenderung: { romance_jorin: true },
+        naechsteSzeneId: "K1_flur_echo"
+      },
+      {
+        text: "Allein die Ruhe genießen.",
+        beschreibungFolge: "Du sammelst dich. Dein Geist ist klar wie Kristall.",
+        werteAenderung: { wissen: 1, mut: 1 },
         naechsteSzeneId: "K1_flur_echo"
       }
     ]
