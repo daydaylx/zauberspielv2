@@ -8,9 +8,11 @@ interface OverlayMenuProps {
     typingEnabled: boolean;
   };
   onUpdateSettings: (key: string, value: any) => void;
+  onSave: () => void;
+  onLoad: () => void;
 }
 
-export const OverlayMenu: React.FC<OverlayMenuProps> = ({ isOpen, onClose, settings, onUpdateSettings }) => {
+export const OverlayMenu: React.FC<OverlayMenuProps> = ({ isOpen, onClose, settings, onUpdateSettings, onSave, onLoad }) => {
   if (!isOpen) return null;
 
   return (
@@ -51,6 +53,25 @@ export const OverlayMenu: React.FC<OverlayMenuProps> = ({ isOpen, onClose, setti
                 <div className="flex justify-between text-xs text-white/30 font-title">
                     <span>Schnell</span>
                     <span>Langsam</span>
+                </div>
+            </div>
+
+            {/* Save / Load Section */}
+            <div className="border-t border-white/10 pt-6 mt-6">
+                <h3 className="font-title text-sm text-accent/70 uppercase tracking-widest mb-4">Spielstand</h3>
+                <div className="flex gap-4">
+                    <button 
+                        onClick={() => { onSave(); onClose(); }}
+                        className="flex-1 py-2 border border-accent/40 text-parchment hover:bg-accent/20 hover:border-accent transition-all rounded font-serif"
+                    >
+                        Speichern
+                    </button>
+                    <button 
+                        onClick={() => { onLoad(); onClose(); }}
+                        className="flex-1 py-2 border border-accent/40 text-parchment hover:bg-accent/20 hover:border-accent transition-all rounded font-serif"
+                    >
+                        Laden
+                    </button>
                 </div>
             </div>
         </div>

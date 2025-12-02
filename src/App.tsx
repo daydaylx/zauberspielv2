@@ -91,6 +91,8 @@ function App() {
         onClose={() => setIsMenuOpen(false)}
         settings={settings}
         onUpdateSettings={handleSettingChange}
+        onSave={() => gameEngine.saveGame()}
+        onLoad={() => gameEngine.loadGame()}
       />
       
       {/* Vignette Overlay immer aktiv für Atmosphäre */}
