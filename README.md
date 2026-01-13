@@ -32,8 +32,8 @@ Stelle sicher, dass [Node.js](https://nodejs.org/) installiert ist.
 
 ```bash
 # Repository klonen
-git clone https://github.com/daydaylx/zauberspielv2.git
-cd zauberspielv2
+git clone https://github.com/daydaylx/Nachtzug19.git
+cd Nachtzug19
 
 # Abhängigkeiten installieren
 npm install
