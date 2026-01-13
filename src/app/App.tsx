@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { gameEngine } from './gameEngine';
-import { GameState } from './types';
-import StoryView from './components/StoryView';
-import { EndingView } from './components/EndingView';
-import { StartScreen } from './components/StartScreen';
-import { HeaderBar } from './components/HeaderBar';
-import { OverlayMenu } from './components/OverlayMenu';
-import { AtmosphereEffects } from './components/AtmosphereEffects';
+import { gameEngine } from '../domain/engine/gameEngine';
+import { GameState } from '../domain/types';
+import StoryView from '../ui/components/StoryView';
+import { EndingView } from '../ui/components/EndingView';
+import { StartScreen } from '../ui/components/StartScreen';
+import { HeaderBar } from '../ui/components/HeaderBar';
+import { OverlayMenu } from '../ui/components/OverlayMenu';
+import { AtmosphereEffects } from '../ui/components/AtmosphereEffects';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>(gameEngine.getState());

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlayerStats } from '../types';
+import { PlayerStats } from '../../domain/types';
 
 interface StatsBarProps {
   stats: PlayerStats;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scene, Choice, PlayerStats, Flags } from '../types';
+import { Scene, Choice, PlayerStats, Flags } from '../../domain/types';
 import { BookLayout } from '../layout/BookLayout';
 import { TypewriterText } from './TypewriterText';
 import { ChoiceList } from './ChoiceList';

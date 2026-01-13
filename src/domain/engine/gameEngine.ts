@@ -1,5 +1,5 @@
-import { GameState, Choice, Scene, Ending } from './types';
-import { scenes, endings, initialStats } from './storyData';
+import { GameState, Choice, Scene, Ending } from '../types';
+import { scenes, endings, initialStats } from '../../content/legacy/storyData';
 
 export class GameEngine {
   private state: GameState;

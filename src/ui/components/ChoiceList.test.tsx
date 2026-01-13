@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ChoiceList } from './ChoiceList';
-import { Choice } from '../types';
+import { Choice } from '../../domain/types';
 import '@testing-library/jest-dom';
 
 describe('ChoiceList Component', () => {
