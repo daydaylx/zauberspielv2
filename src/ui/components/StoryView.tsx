@@ -1,5 +1,6 @@
 import React from 'react';
 import { Scene, Choice, PlayerStats, Flags } from '../../domain/types';
+import { gameEngine } from '../../domain/engine/gameEngine';
 import { BookLayout } from '../layout/BookLayout';
 import { TypewriterText } from './TypewriterText';
 import { ChoiceList } from './ChoiceList';
@@ -18,16 +19,23 @@ interface StoryViewProps {
 }
 
 const StoryView: React.FC<StoryViewProps> = ({ scene, stats, flags, inventory, onMakeChoice, settings }) => {
-  // Filter available choices
-  const availableChoices = scene.choices.filter(choice => 
-    choice.condition ? choice.condition(stats, flags, inventory) : true
-  );
+  // Use engine helper to evaluate conditions for new choices, or run old condition function
+  const gameState = gameEngine.getState();
+
+  const availableChoices = scene.choices.filter(choice => {
+      // Legacy condition function
+      if (typeof choice.condition === 'function') {
+          return choice.condition(stats, flags, inventory);
+      }
+      // New condition object or legacy string
+      return gameEngine.evaluateCondition(choice.condition, gameState);
+  });
 
   const LeftPage = (
     <div className="h-full flex flex-col relative">
       <div className="text-center mb-8 animate-fade-in">
         <h3 className="font-title text-accent text-sm tracking-[0.3em] uppercase mb-2">
-          {scene.kapitel}
+          {typeof scene.kapitel === 'number' ? `Kapitel ${scene.kapitel}` : scene.kapitel}
         </h3>
         <div className="w-8 h-0.5 bg-ink/20 mx-auto mb-4" />
         <h2 className="font-serif text-3xl md:text-4xl text-ink font-bold italic leading-tight">
@@ -35,12 +43,13 @@ const StoryView: React.FC<StoryViewProps> = ({ scene, stats, flags, inventory, o
         </h2>
       </div>
 
-      {/* Atmosphere / Context Description (Placeholder logic) */}
+      {/* Atmosphere / Context Description */}
       <div className="flex-grow flex items-center justify-center opacity-10">
         <div className="text-6xl text-ink rotate-12 font-hand">
           {scene.atmosphere === 'danger' ? 'Gefahr' : 
            scene.atmosphere === 'mystic' ? 'Magie' : 
-           scene.atmosphere === 'tense' ? 'Spannung' : 'Nareth'}
+           scene.atmosphere === 'tense' ? 'Spannung' :
+           scene.atmosphere === 'somber' ? 'Düster' : ''}
         </div>
       </div>
 
@@ -58,7 +67,8 @@ const StoryView: React.FC<StoryViewProps> = ({ scene, stats, flags, inventory, o
             </div>
         )}
 
-        <StatsBar stats={stats} />
+        {/* Pass global state to StatsBar to handle both legacy and new stats */}
+        <StatsBar stats={stats} gameState={gameState} />
       </div>
     </div>
   );
@@ -67,7 +77,7 @@ const StoryView: React.FC<StoryViewProps> = ({ scene, stats, flags, inventory, o
     <div className="h-full flex flex-col animate-ink-in">
       <div className="flex-grow overflow-y-auto scrollbar-custom pr-2">
         <TypewriterText 
-            text={scene.beschreibung} 
+            text={scene.narrative || scene.beschreibung || ''}
             speed={settings.textSpeed} 
             enabled={settings.typingEnabled}
             key={scene.id} // Force reset on scene change

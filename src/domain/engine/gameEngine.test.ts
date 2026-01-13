@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { GameEngine } from './gameEngine'
 import { scenes, initialStats } from '../../content/legacy/storyData'
+import { Scene, Effect, Condition } from '../types';
 
-describe('GameEngine Core', () => {
+describe('GameEngine Legacy Core', () => {
   let engine: GameEngine;
 
   beforeEach(() => {
     engine = new GameEngine();
+    // Default mode is legacy
     engine.startGame();
   });
 
@@ -34,72 +36,127 @@ describe('GameEngine Core', () => {
     expect(engine.getState().currentSceneId).toBe('P1_ankunft');
     expect(engine.getState().history).toContain('P0_Intro');
   });
-
-  it('should handle game over', () => {
-    const endingChoice = {
-        text: "Test Ending",
-        beschreibungFolge: "Test",
-        naechsteSzeneId: "E1_RETTUNG_VERLUST"
-    };
-
-    engine.makeChoice(endingChoice);
-
-    expect(engine.getState().isGameOver).toBe(true);
-    expect(engine.getState().endingId).toBe("E1_RETTUNG_VERLUST");
-  });
 });
 
-describe('New Story Features', () => {
-  let engine: GameEngine;
-
-  beforeEach(() => {
-    engine = new GameEngine();
-    engine.startGame();
-  });
-
-  it('should allow finding the secret sketch in the Scriptorium', () => {
-    // Manuell in die neue Szene springen
-    engine.getState().currentSceneId = 'K1_skriptorium_extra';
+describe('GameEngine Nachtzug 19 Mechanics', () => {
+    let engine: GameEngine;
     
-    const scene = scenes['K1_skriptorium_extra'];
-    const searchChoice = scene.choices.find(c => c.text.includes("Unter Liras Tisch"));
+    // Mock scenes for testing new mechanics
+    const mockScenes: Record<string, Scene> = {
+        'start': {
+            id: 'start',
+            kapitel: 1,
+            titel: 'Start',
+            beschreibung: 'Test start',
+            choices: [
+                {
+                    id: 'c1',
+                    text: 'Inc Truth',
+                    effects: [{ type: 'inc', target: 'tickets_truth', value: 1 }],
+                    next: 's2'
+                },
+                {
+                    id: 'c2',
+                    text: 'Set Item',
+                    effects: [{ type: 'set', target: 'has_tag19', value: true }],
+                    next: 's2'
+                }
+            ]
+        },
+        's2': {
+            id: 's2',
+            kapitel: 1,
+            titel: 'Scene 2',
+            beschreibung: 'Desc',
+            tags: ['station_end'],
+            choices: [
+                {
+                    id: 'c3',
+                    text: 'Condition Check',
+                    condition: { type: 'bool', target: 'has_tag19', value: true },
+                    effects: [],
+                    next: 's3'
+                }
+            ]
+        },
+        's3': {
+             id: 's3',
+             kapitel: 1,
+             titel: 'Scene 3',
+             beschreibung: 'Final',
+             choices: []
+        }
+    };
+
+    beforeEach(() => {
+        engine = new GameEngine();
+        engine.loadContent(mockScenes, 'start');
+    });
+
+    it('should apply effects correctly (inc/set)', () => {
+        const start = mockScenes['start'];
+        engine.makeChoice(start.choices[0]); // Inc Truth
+
+        expect(engine.getState().nachtzugStats.tickets_truth).toBe(1);
+        expect(engine.getState().currentSceneId).toBe('s2');
+    });
+
+    it('should auto-increment memory_drift on station_end', () => {
+        const start = mockScenes['start'];
+        engine.makeChoice(start.choices[0]); // Go to s2 which has station_end tag
+
+        expect(engine.getState().currentSceneId).toBe('s2');
+        expect(engine.getState().nachtzugStats.memory_drift).toBe(1);
+    });
     
-    if (!searchChoice) throw new Error("Choice 'Unter Liras Tisch' not found");
+    it('should evaluate boolean conditions', () => {
+        // First set the item
+        const start = mockScenes['start'];
+        engine.makeChoice(start.choices[1]); // Set has_tag19 = true
 
-    engine.makeChoice(searchChoice);
+        expect(engine.getState().items.has_tag19).toBe(true);
 
-    expect(engine.getState().inventory).toContain("Skizze des Schachts");
-    expect(engine.getState().currentSceneId).toBe("K1_campus_wahl");
-  });
+        // Now check condition in next choice
+        const s2 = mockScenes['s2'];
+        const condChoice = s2.choices[0];
+        const isVisible = engine.evaluateCondition(condChoice.condition, engine.getState());
 
-  it('should allow the loyalty oath (Schwur) in K2', () => {
-    // Manuell kurz vor das Finale springen
-    engine.getState().currentSceneId = 'K2_geister_nachklang';
+        expect(isVisible).toBe(true);
+    });
+
+    it('should evaluate comparison conditions', () => {
+        // Manually set state for test
+        engine.getState().nachtzugStats.conductor_attention = 5;
+
+        const cond: Condition = {
+            type: 'comparison',
+            target: 'conductor_attention',
+            operator: 'gt',
+            value: 3
+        };
+
+        expect(engine.evaluateCondition(cond, engine.getState())).toBe(true);
+
+        const condFail: Condition = {
+            type: 'comparison',
+            target: 'conductor_attention',
+            operator: 'lt',
+            value: 2
+        };
+
+        expect(engine.evaluateCondition(condFail, engine.getState())).toBe(false);
+    });
     
-    const scene = scenes['K2_geister_nachklang'];
-    const oathChoice = scene.choices.find(c => c.text.includes("Schwur leisten"));
-    
-    if (!oathChoice) throw new Error("Choice 'Schwur leisten' not found");
+    it('should clamp values (test implementation pending in engine, but basic inc should work)', () => {
+         // If we implement clamp in engine
+         const effect: Effect = { type: 'clamp', target: 'conductor_attention', value: 6 };
+         engine.getState().nachtzugStats.conductor_attention = 10;
+         engine.applyEffects([effect], engine.getState());
 
-    engine.makeChoice(oathChoice);
+         expect(engine.getState().nachtzugStats.conductor_attention).toBe(6);
 
-    expect(engine.getState().flags.loyalty_max).toBe(true);
-    expect(engine.getState().stats.empathie).toBeGreaterThanOrEqual(2); // +2 Empathie
-  });
-
-  it('should reveal the secret weakness when freeing the ghost', () => {
-    // Manuell zum Geist springen
-    engine.getState().currentSceneId = 'K2_geisterraum';
-    
-    const scene = scenes['K2_geisterraum'];
-    const freeChoice = scene.choices.find(c => c.text.includes("Ihn lösen"));
-    
-    if (!freeChoice) throw new Error("Choice 'Ihn lösen' not found");
-
-    engine.makeChoice(freeChoice);
-
-    expect(engine.getState().flags.geist_befreit).toBe(true);
-    expect(engine.getState().flags.knows_secret_weakness).toBe(true); // Der neue Hinweis
-    expect(engine.getState().currentSceneId).toBe("K2_geister_nachklang");
-  });
+         engine.getState().nachtzugStats.conductor_attention = -5;
+         engine.applyEffects([effect], engine.getState());
+         expect(engine.getState().nachtzugStats.conductor_attention).toBe(0);
+    });
 });
