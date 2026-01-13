@@ -1,41 +1,99 @@
+
+// Effect Types
+export type EffectType = 'inc' | 'dec' | 'set' | 'clamp';
+
+export type Effect = {
+  type: EffectType;
+  target: string;
+  value: number | boolean | string;
+};
+
+// Condition Types
+export type ConditionOperator = 'eq' | 'neq' | 'gt' | 'lt' | 'gte' | 'lte' | 'has';
+
+// Legacy Condition Function Type
+export type LegacyCondition = (stats: PlayerStats, flags: Flags, inventory: string[]) => boolean;
+
+// Structured Condition Types
+export type ComparisonCondition = {
+  type: 'comparison';
+  target: string;
+  operator: ConditionOperator;
+  value: number | boolean | string;
+};
+
+export type BoolCondition = {
+  type: 'bool';
+  target: string;
+  value: boolean;
+};
+
+export type LogicCondition = {
+  type: 'and' | 'or';
+  conditions: Condition[];
+};
+
+export type Condition =
+  | string
+  | LegacyCondition
+  | ComparisonCondition
+  | BoolCondition
+  | LogicCondition;
+
+// Legacy Stats
 export type PlayerStats = {
   mut: number;
   wissen: number;
   empathie: number;
 };
 
-export type Flags = {
-  trusted_by_lira?: boolean;
-  trusted_by_jorin?: boolean;
-  helped_jorin_prolog?: boolean; // Wichtig für Callback
-  saw_shadow_truth?: boolean;
-  book_sealed?: boolean;
-  book_used?: boolean;
-  rivalry_kaelen?: boolean; // Neuer Rivale
-  [key: string]: boolean | undefined;
+export type Flags = Record<string, boolean | undefined>;
+
+// New Stats Structure
+export type NachtzugStats = {
+  tickets_truth: number;
+  tickets_escape: number;
+  tickets_guilt: number;
+  tickets_love: number;
+  conductor_attention: number;
+  memory_drift: number;
+  rel_comp7: number;
+  rel_boy: number;
+  rel_sleepless: number;
 };
 
 export type Choice = {
+  id?: string;
   text: string;
+  label?: string;
+
+  // Legacy fields
   beschreibungFolge?: string;
-  werteAenderung?: {
-    mut?: number;
-    wissen?: number;
-    empathie?: number;
-  };
+  werteAenderung?: Partial<PlayerStats>;
   flagsAenderung?: Flags;
-  itemBelohnung?: string; // NEU: Gegenstand erhalten
-  itemVerlust?: string; // NEU: Gegenstand entfernen
-  naechsteSzeneId: string;
-  condition?: (stats: PlayerStats, flags: Flags, inventory: string[]) => boolean;
+  itemBelohnung?: string;
+  itemVerlust?: string;
+
+  // New fields
+  effects?: Effect[];
+  condition?: Condition;
+
+  naechsteSzeneId?: string;
+  next?: string;
 };
 
 export type Scene = {
   id: string;
-  kapitel: string;
+  kapitel: number | string;
   titel: string;
-  beschreibung: string;
-  atmosphere?: 'normal' | 'danger' | 'mystic' | 'dream' | 'tense' | 'somber' | 'dark'; // NEU: Für CSS-Styling
+  beschreibung?: string; // Made optional
+  narrative?: string;
+
+  atmosphere?: 'normal' | 'danger' | 'mystic' | 'dream' | 'tense' | 'somber' | 'dark';
+
+  tags?: string[];
+  state_notes?: string[];
+
   effekteBeimBetreten?: {
     mut?: number;
     wissen?: number;
@@ -43,6 +101,7 @@ export type Scene = {
     flagsAenderung?: Flags;
     itemBelohnung?: string;
   };
+
   choices: Choice[];
 };
 
@@ -54,9 +113,14 @@ export type Ending = {
 
 export type GameState = {
   currentSceneId: string;
+
   stats: PlayerStats;
   flags: Flags;
-  inventory: string[]; // NEU: Inventar
+  inventory: string[];
+
+  nachtzugStats: NachtzugStats;
+  items: Record<string, boolean>;
+
   history: string[];
   isGameOver: boolean;
   endingId?: string;
