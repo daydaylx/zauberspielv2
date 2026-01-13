@@ -114,26 +114,32 @@ src/
 **Zweck**: Story-Daten, Kapitel, Szenen, Dialoge
 
 #### 4.1 Legacy (`content/legacy/`)
-- **`storyData.ts`**: Aktuelle Story (Schattenbibliothek von Nareth)
+- **`storyData.ts`**: Referenz-Story (Schattenbibliothek von Nareth)
   - Scene Definitions
   - Endings
   - Initial Stats
+  - **Status**: Spielbar, aber veraltet. Dient als Referenz-Implementation.
 
-**Zukünftig**:
+#### 4.2 NACHTZUG 19 (`content/nachtzug19/`) – **Haupt-Projekt**
+Neue Story-Implementation nach strikten Canon Rules (siehe `NACHTZUG_19_RULES.md`):
+
 ```
-content/
-├── legacy/           # Alte Story (bleibt spielbar)
-├── nachtzug19/       # Neue Story (siehe CONCEPT_NACHTZUG_19.md)
-│   ├── chapters/
-│   ├── scenes/
-│   └── endings/
-└── shared/           # Wiederverwendbare Content-Utilities
+content/nachtzug19/
+├── manifest.ts       # Kapitelübersicht, Einstiegsszene, Initial State
+├── scenes/           # Szenen organisiert nach Kapiteln
+│   ├── chapter1.ts   # Kapitel 1: Der Bahnsteig ohne Name
+│   ├── chapter2.ts   # Kapitel 2: Die Fahrkarten
+│   ├── ...
+│   └── chapter7.ts   # Kapitel 7: Endstation (Enden A/B/C)
+├── endings.ts        # Ende-Definitionen
+└── validators.ts     # Content-Validierung (Graph-Invarianten)
 ```
 
 **Wichtig**:
 - Keine Engine-Logik (nur Daten)
 - Keine UI-Komponenten
 - Exportiert plain Objects/Arrays
+- Validierung durch `validators.ts` (siehe Abschnitt 7 in `NACHTZUG_19_RULES.md`)
 
 ---
 
@@ -260,19 +266,39 @@ Siehe `docs/CHANGELOG.md` für Details.
 
 ---
 
-## Nächste Schritte (außerhalb des Scope)
+## Entwicklungs-Status
 
-1. **Story-System generalisieren**:
-   - `domain/engine` sollte Story-agnostisch werden
+### ✅ Abgeschlossen
+- Content/Domain/UI Separation implementiert
+- Legacy-Story "Schattenbibliothek von Nareth" funktionsfähig
+- Game Engine mit Stats, Flags, Inventory
+- UI-Komponenten (Book Layout, Typewriter, Atmosphere Effects)
+- Test-Setup (Vitest)
+
+### 🚧 In Entwicklung: NACHTZUG 19
+- Content-Struktur nach `NACHTZUG_19_RULES.md`
+- State-Modell erweitert (Tickets, Memory Drift, Conductor Attention)
+- Graph-Validierung für Content (Dead-Ends, Referenzen, Canon Rules)
+- Kapitel 1–2 als MVP (10–14 Szenen, Kontrolle 1, Station-Ende 1)
+
+### 📋 Geplant
+1. **Content-Validierung**:
+   - Schema für Scenes/Choices/Effects
+   - Automatische Tests für Story-Konsistenz (Graph-Invarianten)
+   - Linter für unbekannte Flags, fehlende Effects
+
+2. **Engine-Erweiterungen**:
+   - Effects-System (inc, dec, set, clamp)
+   - Condition-Parser (validierbare Mini-Sprache)
    - Content-Loader für dynamisches Story-Wechseln
 
-2. **Content-Validierung**:
-   - Schema für Scenes/Choices/Endings
-   - Automatische Tests für Story-Konsistenz
+3. **Drift-Mechanik**:
+   - Textvarianten ab `memory_drift >= 3`
+   - UI-Glitches ab `memory_drift >= 5`
 
-3. **Plugin-System**:
-   - Custom Effects (Audio, Visual)
-   - Conditional Logic Extensions
+4. **Testing**:
+   - Story-Path-Tests (alle Enden erreichbar?)
+   - Callback-Validierung (jede Choice hat Rückwirkung?)
 
 ---
 

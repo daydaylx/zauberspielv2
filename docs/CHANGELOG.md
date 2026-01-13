@@ -1,6 +1,43 @@
 # Migration Changelog: Content/Domain/UI Separation
 
-## Datum: 2026-01-13
+## Datum: 2026-01-13 (Dokumentation Update)
+
+### Dokumentation an NACHTZUG 19 Konzept angepasst
+
+**Grund**: Das Projekt fokussiert sich nun auf das neue Story-Konzept "NACHTZUG 19". Alle Dokumentation wurde aktualisiert, um dies widerzuspiegeln.
+
+#### Änderungen:
+- **README.md**: Vollständig überarbeitet
+  - Titel und Beschreibung auf NACHTZUG 19 geändert
+  - Features beschreiben jetzt NACHTZUG 19 Story-Mechaniken (Tickets, Memory Drift, Kontrollen)
+  - Engine-Features hervorgehoben (Content/Domain/UI Separation, deterministische Engine)
+  - Content-Format aktualisiert (Scene/Choice Schema, State-Modell, Canon Rules)
+  - Legacy-Story "Schattenbibliothek" als Referenz-Implementation markiert
+
+- **ARCHITECTURE.md**: Erweitert
+  - Content Layer: NACHTZUG 19 als Haupt-Projekt dokumentiert
+  - Neue Struktur für `content/nachtzug19/` hinzugefügt
+  - Entwicklungs-Status-Sektion hinzugefügt (Abgeschlossen/In Entwicklung/Geplant)
+
+- **Gelöschte Dateien** (veraltet):
+  - `schattenbibliothek_nareth.md` (alte Story, veraltet)
+  - `Das Magische Zauberbuch - Vollständige Projektdoku.md` (anderes Projekt, nicht relevant)
+  - `Magisches_Zauberbuch_Konzept.md` (anderes Projekt, nicht relevant)
+
+#### Neue Dokumentations-Struktur:
+```
+docs/
+├── NACHTZUG_19_RULES.md    # Canon Rules, Content-Format, Graph-Invarianten
+├── CONCEPT_NACHTZUG_19.md  # Story-Konzept (7 Kapitel, Enden, NPCs)
+├── ARCHITECTURE.md         # Layer-Architektur
+└── CHANGELOG.md            # Dieser Changelog
+```
+
+**Status**: ✅ Dokumentation vollständig aktualisiert
+
+---
+
+## Datum: 2026-01-13 (Initiale Migration)
 
 ### Grund der Migration
 Strukturelle Umorganisation des Projekts, um Story-Content, Game-Engine-Logic und UI-Layer sauber zu trennen. Dies verbessert Wartbarkeit, Testbarkeit und ermöglicht einfacheres Hinzufügen neuer Stories (z.B. "NACHTZUG 19").
