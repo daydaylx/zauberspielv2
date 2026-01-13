@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Scene } from '../types';
+import { Scene } from '../../domain/types';
 
 interface AtmosphereEffectsProps {
   type?: Scene['atmosphere'];

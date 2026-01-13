@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import StoryView from './StoryView';
-import { Scene } from '../types';
+import { Scene } from '../../domain/types';
 import '@testing-library/jest-dom'; // Ensure matchers are available
 
 const mockScene: Scene = {
@@ -8,16 +8,16 @@ const mockScene: Scene = {
   titel: 'Test Title',
   kapitel: 'Chapter 1',
   beschreibung: 'Long text that should scroll...',
-  atmosphere: 'neutral',
+  atmosphere: 'normal',
   choices: []
 };
 
 describe('StoryView', () => {
   it('renders with the custom scrollbar class', () => {
     render(
-      <StoryView 
+      <StoryView
         scene={mockScene}
-        stats={{ health: 10, mana: 10, sanity: 10 }}
+        stats={{ mut: 0, wissen: 0, empathie: 0 }}
         flags={{}}
         inventory={[]}
         onMakeChoice={() => {}}

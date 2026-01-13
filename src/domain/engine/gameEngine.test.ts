@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { GameEngine } from './src/gameEngine'
-import { scenes, initialStats } from './src/storyData'
+import { GameEngine } from './gameEngine'
+import { scenes, initialStats } from '../../content/legacy/storyData'
 
 describe('GameEngine Core', () => {
   let engine: GameEngine;

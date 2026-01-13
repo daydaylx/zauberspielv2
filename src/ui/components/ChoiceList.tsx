@@ -1,5 +1,5 @@
 import React from 'react';
-import { Choice } from '../types';
+import { Choice } from '../../domain/types';
 
 interface ChoiceListProps {
   choices: Choice[];

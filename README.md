@@ -43,21 +43,43 @@ Das Spiel ist nun unter `http://localhost:5173` erreichbar.
 
 ## 🛠️ Projektstruktur
 
+Das Projekt folgt einer **Content/Domain/UI Separation** für bessere Wartbarkeit und Skalierbarkeit.
+
 ```
 src/
-├── components/       # UI-Komponenten (ChoiceList, StatsBar, StoryView...)
-├── layout/           # Layout-Wrapper (BookLayout)
-├── gameEngine.ts     # Die Logik-Maschine (Zustandsverwaltung)
-├── storyData.ts      # 📖 HIER LIEGT DIE STORY (Szenen, Entscheidungen, Texte)
-├── types.ts          # TypeScript Definitionen
-└── main.tsx          # Einstiegspunkt
+├── app/                    # Application Entry Point
+│   ├── main.tsx           # Vite Entry Point
+│   ├── App.tsx            # Main App Component
+│   └── index.css          # Global Styles
+│
+├── ui/                     # User Interface Layer
+│   ├── components/        # UI-Komponenten (StoryView, ChoiceList, StatsBar...)
+│   ├── layout/            # Layout-Wrapper (BookLayout)
+│   └── hooks/             # React Hooks (useTypewriter)
+│
+├── domain/                 # Business Logic (Framework-agnostic)
+│   ├── engine/            # Game Engine (Zustandsverwaltung, Choice Processing)
+│   └── types/             # TypeScript Definitionen
+│
+└── content/                # Story Content & Data
+    └── legacy/            # 📖 Aktuelle Story: "Die Schattenbibliothek von Nareth"
+        └── storyData.ts   # Szenen, Entscheidungen, Texte, Enden
+
+docs/
+├── ARCHITECTURE.md         # Detaillierte Architektur-Dokumentation
+├── CONCEPT_NACHTZUG_19.md  # Konzept für neue Story "NACHTZUG 19"
+└── CHANGELOG.md            # Migrations-Historie
 ```
+
+📘 **Mehr Details**: Siehe `docs/ARCHITECTURE.md` für die vollständige Layer-Beschreibung.
 
 ---
 
 ## 📖 Story-Engine: Wie man Inhalte hinzufügt
 
-Die gesamte Geschichte wird in `src/storyData.ts` definiert. Es sind keine Programmierkenntnisse nötig, um Texte zu ändern, aber TypeScript hilft dabei, Fehler zu vermeiden.
+Die gesamte Geschichte wird in `src/content/legacy/storyData.ts` definiert. Es sind keine Programmierkenntnisse nötig, um Texte zu ändern, aber TypeScript hilft dabei, Fehler zu vermeiden.
+
+> **Neue Story-Konzepte**: Für zukünftige Stories (z.B. "NACHTZUG 19") siehe `docs/CONCEPT_NACHTZUG_19.md`.
 
 ### Aufbau einer Szene
 

@@ -1,4 +1,4 @@
-import { Scene, Ending, PlayerStats } from './types';
+import { Scene, Ending, PlayerStats } from '../../domain/types';
 
 export const scenes: Record<string, Scene> = {
   // ------------------------------------------------------------------

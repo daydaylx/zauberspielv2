@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ending } from '../types';
+import { Ending } from '../../domain/types';
 import { BookLayout } from '../layout/BookLayout';
 
 interface EndingViewProps {
