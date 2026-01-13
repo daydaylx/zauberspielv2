@@ -1,23 +1,28 @@
-# 🌑 Die Schattenbibliothek von Nareth
+# 🚂 NACHTZUG 19
 
-**Ein immersives Text-Adventure basierend auf modernen Web-Technologien.**
+**Ein immersives psychologisches Mystery-Adventure als Interactive Fiction Engine.**
 
-> "Tinte ist das Blut der Realität. Wir schreiben die Welt neu."
+> "Der Zug hält an Stationen, die es nicht gibt. Nach jedem Halt verändert sich ein Detail deiner Erinnerung."
 
-Dieses Projekt ist eine Interactive Fiction (IF) Engine, die mit React, TypeScript und Vite gebaut wurde. Sie bietet ein responsives Buch-Layout, eine Typerwriter-Animation, Inventar-Management und ein komplexes Entscheidungssystem mit Stats, Flags und bedingter Logik.
+Dieses Projekt ist eine **deterministische, testbare Interactive Fiction (IF) Engine**, die mit React, TypeScript und Vite gebaut wurde. Die Engine ist story-agnostisch und basiert auf strikter **Content/Domain/UI Separation** – konzipiert für komplexe, verzweigte Narratives mit spürbaren Konsequenzen.
 
 ## ✨ Features
 
-*   **Dynamische Story-Engine:** Szenen basieren auf JSON-Strukturen, komplett typisiert mit TypeScript.
-*   **Stat-System:** Verfolgt Mut, Wissen und Empathie des Spielers.
-*   **Konsequenzen:** Entscheidungen setzen "Flags", die den späteren Spielverlauf, Dialoge und Enden massiv beeinflussen (z.B. Loyalität von Gefährten, befreite Geister).
-*   **Inventar-System:** Sammle Gegenstände und setze sie strategisch ein (oder opfere sie).
-*   **Atmosphärisches UI:**
-    *   Animiertes Buch-Layout.
-    *   Typewriter-Effekt für Texte.
-    *   Visuelles Feedback für Belohnungen.
-    *   Responsive Design (Mobile & Desktop).
-*   **Qualitätssicherung:** Umfassende Testabdeckung mit Vitest und automatisierte CI/CD-Pipeline via GitHub Actions.
+### Story: NACHTZUG 19
+*   **Psychologisches Mystery:** Ein Zug, der offiziell nicht existiert. Stationen ohne Namen. Erinnerungen, die sich verändern.
+*   **Ticket-System:** Sammle keine Gegenstände, sondern Entscheidungsmuster (Wahrheit, Flucht, Schuld, Liebe), die bestimmen, welche Wagen sich öffnen.
+*   **Memory Drift:** Nach jeder Station verändert sich ein Detail – Namen, Gesichter, Erinnerungen kippen subtil.
+*   **Harte Regeln:** Der Zug lügt nie direkt. Kontrollen in Kapitel 2, 3, 5. Jede Entscheidung hat sichtbare Rückwirkung (Callback-Regel).
+*   **Beziehungen:** NPCs mit eigener Agenda. Vertrauen aufbauen oder Distanz wahren – beides hat Konsequenzen.
+
+### Engine-Features
+*   **Deterministische Story-Engine:** Szenen als typisierte Daten, keine UI-Logik in Content.
+*   **Content/Domain/UI Separation:** Framework-agnostische Game-Engine, austauschbarer Content.
+*   **Stat-System:** Stats (Mut, Wissen, Empathie), Tickets (truth/escape/guilt/love), Druck (conductor_attention, memory_drift).
+*   **Condition & Effects System:** Validierbare Mini-Sprache für Branches und State-Änderungen.
+*   **Graph-Validierung:** Automatische Prüfung auf Dead-Ends, fehlende Referenzen, Regel-Verstöße.
+*   **Responsives UI:** Buch-Layout, Typewriter-Effekt, Atmosphären-Modi (normal, danger, mystic, somber).
+*   **Qualitätssicherung:** Umfassende Testabdeckung mit Vitest, TypeScript Strict Mode.
 
 ---
 
@@ -62,73 +67,91 @@ src/
 │   └── types/             # TypeScript Definitionen
 │
 └── content/                # Story Content & Data
-    └── legacy/            # 📖 Aktuelle Story: "Die Schattenbibliothek von Nareth"
-        └── storyData.ts   # Szenen, Entscheidungen, Texte, Enden
+    ├── legacy/            # 📖 Referenz-Story: "Die Schattenbibliothek von Nareth"
+    │   └── storyData.ts   # Legacy-Implementation (spielbar, aber veraltet)
+    └── nachtzug19/        # 🚂 Haupt-Story: "NACHTZUG 19" (in Entwicklung)
+        ├── manifest.ts    # Kapitelübersicht + Einstieg
+        └── scenes/        # Szenen nach Kapiteln organisiert
 
 docs/
-├── ARCHITECTURE.md         # Detaillierte Architektur-Dokumentation
-├── CONCEPT_NACHTZUG_19.md  # Konzept für neue Story "NACHTZUG 19"
+├── NACHTZUG_19_RULES.md    # Projektregeln, Struktur & Content-Format
+├── CONCEPT_NACHTZUG_19.md  # Vollständiges Story-Konzept (7 Kapitel + Enden)
+├── ARCHITECTURE.md         # Layer-Architektur (Content/Domain/UI)
 └── CHANGELOG.md            # Migrations-Historie
 ```
 
-📘 **Mehr Details**: Siehe `docs/ARCHITECTURE.md` für die vollständige Layer-Beschreibung.
+📘 **Mehr Details**:
+- **Story-Konzept**: `docs/CONCEPT_NACHTZUG_19.md`
+- **Projektregeln**: `docs/NACHTZUG_19_RULES.md`
+- **Architektur**: `docs/ARCHITECTURE.md`
 
 ---
 
-## 📖 Story-Engine: Wie man Inhalte hinzufügt
+## 📖 Story-Engine: Content-Format
 
-Die gesamte Geschichte wird in `src/content/legacy/storyData.ts` definiert. Es sind keine Programmierkenntnisse nötig, um Texte zu ändern, aber TypeScript hilft dabei, Fehler zu vermeiden.
+Die Engine trennt strikt **Content** (Daten) von **Logic** (Engine). Content wird in TypeScript als typisierte Daten-Strukturen definiert.
 
-> **Neue Story-Konzepte**: Für zukünftige Stories (z.B. "NACHTZUG 19") siehe `docs/CONCEPT_NACHTZUG_19.md`.
+> **Vollständige Content-Regeln**: Siehe `docs/NACHTZUG_19_RULES.md` für das verbindliche Format.
 
-### Aufbau einer Szene
-
-Eine Szene sieht so aus:
-
-```typescript
-"SZENE_ID": {
-  id: "SZENE_ID",
-  kapitel: "Kapitel 1",
-  titel: "Der Titel der Seite",
-  atmosphere: "mystic", // Steuert visuelle Effekte (normal, danger, mystic, somber)
-  beschreibung: "Der Text, der erzählt wird...",
-  choices: [
-    // Liste der Entscheidungen
-  ]
-}
-```
-
-### Aufbau einer Entscheidung (Choice)
-
-Entscheidungen sind das Herzstück. Sie können Bedingungen haben und Werte ändern.
+### Grundschema: Scene
 
 ```typescript
 {
-  text: "Die Tür eintreten (Mut)",
-  
-  // Wohin geht es?
-  naechsteSzeneId: "RAUM_DAHINTER",
-  
-  // Was ändert sich am Charakter?
-  werteAenderung: { mut: 1, wissen: -1 },
-  
-  // Was passiert in der Welt? (Flags setzen)
-  flagsAenderung: { door_broken: true },
-  
-  // Inventar: Belohnung oder Verlust
-  itemBelohnung: "Splitterholz",
-  itemVerlust: "Alter Schlüssel",
-  
-  // Bedingung: Wann ist diese Option sichtbar?
-  condition: (stats, flags, inventory) => stats.mut >= 5 || inventory.includes("Axt")
+  id: "c1_s01_platform",           // Eindeutige ID
+  chapter: 1,                       // Kapitel 1-7
+  title: "Leerer Bahnsteig",       // Kurztitel
+  narrative: "Der Bahnsteig ist leer. Kein Mensch...",  // 3-12 Absätze
+  choices: [ /* ... */ ],           // 1-4 Choices
+  tags: ["station_end"],            // Optional: station_end, control, reveal, drift_variant
+  state_notes: ["Bahnsteigname wird später geglitcht"]  // Max 3 Callback-Hinweise
 }
 ```
 
-### Wichtige Story-Konzepte
+### Grundschema: Choice
 
-1.  **Stats:** Mut, Wissen, Empathie. Diese öffnen oft spezielle Pfade (z.B. kann man Geister nur mit hoher Empathie verstehen).
-2.  **Flags:** Booleans (Ja/Nein), die speichern, was passiert ist (z.B. `geist_befreit: true`).
-3.  **Items:** Werden als Strings im Inventar gespeichert. `itemVerlust` entfernt sie wieder (z.B. beim Opfern eines Gegenstandes).
+```typescript
+{
+  id: "wait",                       // Lokal eindeutig
+  label: "Warten",                  // Button-Text
+  condition: "state.wissen >= 3",   // Optional: Bedingung (validierbar)
+  effects: [                        // Mindestens 1 Effect
+    { type: "inc", target: "wissen", value: 1 },
+    { type: "set", target: "has_tag19", value: true }
+  ],
+  next: "c1_s02_train_appears"      // Nächste Szene (oder "ending": "A")
+}
+```
+
+### State-Modell (NACHTZUG 19)
+
+```typescript
+{
+  // Stats (0-10)
+  mut: 5, wissen: 3, empathie: 4,
+
+  // Tickets (0-5) - Entscheidungsmuster
+  tickets_truth: 0, tickets_escape: 0, tickets_guilt: 0, tickets_love: 0,
+
+  // Druck/Chaos (0-6)
+  conductor_attention: 0,  // Je höher, desto härter die Kontrollen
+  memory_drift: 0,         // Ab 3: Textvarianten mit falschen Details
+
+  // Beziehungen (-2 bis +4)
+  rel_comp7: 0, rel_boy: 0, rel_sleepless: 0,
+
+  // Items (boolean)
+  has_recorder: false, has_tag19: false, photo_anomaly: false
+}
+```
+
+### Wichtige Regeln (Canon Rules)
+
+1. **R1: Drift nach Station** – Jede Station erhöht `memory_drift` oder triggert eine Korrektur.
+2. **R2: Kontrollen in Kap. 2, 3, 5** – Immer feste Gatepoints, verändern mindestens eine State-Variable.
+3. **R3: Jede Choice hat Rückwirkung** – Keine Choice ohne Effect + sichtbaren Callback später.
+4. **R4: Der Zug lügt nicht direkt** – Bedeutungsverschiebung, nicht plumpe Falschaussagen.
+
+📘 **Mehr Details**: `docs/NACHTZUG_19_RULES.md` (Content-Format, Validation, Graph-Invarianten)
 
 ---
 
