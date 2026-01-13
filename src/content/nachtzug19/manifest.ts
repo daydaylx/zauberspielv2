@@ -14,21 +14,21 @@ export const nachtzug19Manifest: Manifest = {
     {
       number: 1,
       title: 'Leerer Bahnsteig',
-      scene_count: 6
+      scene_count: 12
     },
     {
       number: 2,
       title: 'Die erste Kontrolle',
-      scene_count: 6
+      scene_count: 12
     },
     {
       number: 3,
-      title: 'Gesichter verschieben sich',
-      scene_count: 0 // TODO: Noch nicht implementiert
+      title: 'Wagen 7',
+      scene_count: 12
     },
     {
       number: 4,
-      title: 'Wagen 7',
+      title: 'Spiegelungen',
       scene_count: 0 // TODO: Noch nicht implementiert
     },
     {
