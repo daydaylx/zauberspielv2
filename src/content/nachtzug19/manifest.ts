@@ -29,7 +29,7 @@ export const nachtzug19Manifest: Manifest = {
     {
       number: 4,
       title: 'Spiegelungen',
-      scene_count: 0 // TODO: Noch nicht implementiert
+      scene_count: 12
     },
     {
       number: 5,

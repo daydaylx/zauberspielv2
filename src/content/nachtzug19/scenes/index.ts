@@ -8,6 +8,7 @@ import { ScenesCollection } from '../../../domain/types';
 import { chapter1Scenes } from './c1';
 import { chapter2Scenes } from './c2';
 import { chapter3Scenes } from './c3';
+import { chapter4Scenes } from './c4';
 
 /**
  * Alle Szenen der NACHTZUG 19 Story
@@ -15,5 +16,6 @@ import { chapter3Scenes } from './c3';
 export const nachtzug19Scenes: ScenesCollection = {
   ...chapter1Scenes,
   ...chapter2Scenes,
-  ...chapter3Scenes
+  ...chapter3Scenes,
+  ...chapter4Scenes
 };
