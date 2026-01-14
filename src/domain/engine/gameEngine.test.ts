@@ -1,105 +1,191 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { GameEngine } from './gameEngine'
-import { scenes, initialStats } from '../../content/legacy/storyData'
+import { describe, it, expect, beforeEach } from 'vitest';
+import { applyEffects, evaluateCondition, transitionToNextScene } from './gameEngine';
+import { createInitialState, GameState, Scene, Choice, Effect } from '../types/index';
 
-describe('GameEngine Core', () => {
-  let engine: GameEngine;
-
-  beforeEach(() => {
-    engine = new GameEngine();
-    engine.startGame();
-  });
-
-  it('should initialize with start scene', () => {
-    expect(engine.getState().currentSceneId).toBe('P0_Intro');
-    expect(engine.getState().stats).toEqual(initialStats);
-  });
-
-  it('should update stats when making a choice', () => {
-    const startScene = scenes['P0_Intro'];
-    const choice = startScene.choices[0]; // "Amulett betrachten" -> Wissen +1
-
-    engine.makeChoice(choice);
-
-    expect(engine.getState().stats.wissen).toBe(1);
-    expect(engine.getState().stats.empathie).toBe(0);
-  });
-
-  it('should transition to next scene', () => {
-    const startScene = scenes['P0_Intro'];
-    const choice = startScene.choices[0]; // -> P1_ankunft
-
-    engine.makeChoice(choice);
-
-    expect(engine.getState().currentSceneId).toBe('P1_ankunft');
-    expect(engine.getState().history).toContain('P0_Intro');
-  });
-
-  it('should handle game over', () => {
-    const endingChoice = {
-        text: "Test Ending",
-        beschreibungFolge: "Test",
-        naechsteSzeneId: "E1_RETTUNG_VERLUST"
-    };
-
-    engine.makeChoice(endingChoice);
-
-    expect(engine.getState().isGameOver).toBe(true);
-    expect(engine.getState().endingId).toBe("E1_RETTUNG_VERLUST");
-  });
-});
-
-describe('New Story Features', () => {
-  let engine: GameEngine;
+describe('Game Engine Core', () => {
+  let state: GameState;
 
   beforeEach(() => {
-    engine = new GameEngine();
-    engine.startGame();
+    state = createInitialState('start_scene');
   });
 
-  it('should allow finding the secret sketch in the Scriptorium', () => {
-    // Manuell in die neue Szene springen
-    engine.getState().currentSceneId = 'K1_skriptorium_extra';
-    
-    const scene = scenes['K1_skriptorium_extra'];
-    const searchChoice = scene.choices.find(c => c.text.includes("Unter Liras Tisch"));
-    
-    if (!searchChoice) throw new Error("Choice 'Unter Liras Tisch' not found");
+  describe('applyEffects', () => {
+    it('should increment a value', () => {
+      // Setup: tickets_truth starts at 0
+      const effects: Effect[] = [{ type: 'inc', target: 'tickets_truth', value: 2 }];
+      applyEffects(state, effects);
+      expect(state.tickets.tickets_truth).toBe(2);
+    });
 
-    engine.makeChoice(searchChoice);
+    it('should decrement a value', () => {
+        // Setup
+        state.tickets.tickets_truth = 3;
+        const effects: Effect[] = [{ type: 'dec', target: 'tickets_truth', value: 1 }];
+        applyEffects(state, effects);
+        expect(state.tickets.tickets_truth).toBe(2);
+    });
 
-    expect(engine.getState().inventory).toContain("Skizze des Schachts");
-    expect(engine.getState().currentSceneId).toBe("K1_campus_wahl");
+    it('should set a value', () => {
+        const effects: Effect[] = [{ type: 'set', target: 'chapter_index', value: 5 }];
+        applyEffects(state, effects);
+        expect(state.chapter_index).toBe(5);
+    });
+
+    it('should clamp values (max)', () => {
+        // tickets_truth max is 5
+        const effects: Effect[] = [{ type: 'inc', target: 'tickets_truth', value: 10 }];
+        applyEffects(state, effects);
+        expect(state.tickets.tickets_truth).toBe(5);
+    });
+
+    it('should clamp values (min)', () => {
+        // tickets_truth min is 0
+        state.tickets.tickets_truth = 1;
+        const effects: Effect[] = [{ type: 'dec', target: 'tickets_truth', value: 5 }];
+        applyEffects(state, effects);
+        expect(state.tickets.tickets_truth).toBe(0);
+    });
+
+    it('should handle custom clamp range', () => {
+        // Assuming applyEffects supports custom clamp ranges if defined in Effect
+        // The implementation uses internal autoClamp, but also checks effect.clamp_min/max
+        const effects: Effect[] = [{ type: 'clamp', target: 'tickets_truth', value: 0, clamp_min: 2, clamp_max: 4 }];
+        state.tickets.tickets_truth = 5; // Start high
+        applyEffects(state, effects);
+        // It takes currentValue, then applies clamp if type is 'clamp'?
+        // Looking at code:
+        // case 'clamp':
+        // newValue = currentValue;
+        // if (effect.clamp_min ...) newValue = ...
+        // So it clamps the current value.
+        expect(state.tickets.tickets_truth).toBe(4);
+    });
   });
 
-  it('should allow the loyalty oath (Schwur) in K2', () => {
-    // Manuell kurz vor das Finale springen
-    engine.getState().currentSceneId = 'K2_geister_nachklang';
-    
-    const scene = scenes['K2_geister_nachklang'];
-    const oathChoice = scene.choices.find(c => c.text.includes("Schwur leisten"));
-    
-    if (!oathChoice) throw new Error("Choice 'Schwur leisten' not found");
+  describe('evaluateCondition', () => {
+    it('should evaluate == correctly', () => {
+        state.tickets.tickets_truth = 2;
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '==', value: 2 })).toBe(true);
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '==', value: 3 })).toBe(false);
+    });
 
-    engine.makeChoice(oathChoice);
+    it('should evaluate != correctly', () => {
+        state.tickets.tickets_truth = 2;
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '!=', value: 3 })).toBe(true);
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '!=', value: 2 })).toBe(false);
+    });
 
-    expect(engine.getState().flags.loyalty_max).toBe(true);
-    expect(engine.getState().stats.empathie).toBeGreaterThanOrEqual(2); // +2 Empathie
+    it('should evaluate >= correctly', () => {
+        state.tickets.tickets_truth = 2;
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '>=', value: 1 })).toBe(true);
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '>=', value: 2 })).toBe(true);
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '>=', value: 3 })).toBe(false);
+    });
+
+    it('should evaluate <= correctly', () => {
+        state.tickets.tickets_truth = 2;
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '<=', value: 3 })).toBe(true);
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '<=', value: 2 })).toBe(true);
+        expect(evaluateCondition(state, { type: 'compare', target: 'tickets_truth', operator: '<=', value: 1 })).toBe(false);
+    });
+
+    it('should evaluate AND conditions', () => {
+        state.tickets.tickets_truth = 2;
+        state.tickets.tickets_escape = 3;
+        const cond = {
+            type: 'and' as const,
+            conditions: [
+                { type: 'compare' as const, target: 'tickets_truth', operator: '==' as const, value: 2 },
+                { type: 'compare' as const, target: 'tickets_escape', operator: '>' as const, value: 1 }
+            ]
+        };
+        expect(evaluateCondition(state, cond)).toBe(true);
+
+        // Make one false
+        cond.conditions[1].value = 5;
+        expect(evaluateCondition(state, cond)).toBe(false);
+    });
+
+    it('should evaluate OR conditions', () => {
+        state.tickets.tickets_truth = 2;
+        const cond = {
+            type: 'or' as const,
+            conditions: [
+                { type: 'compare' as const, target: 'tickets_truth', operator: '==' as const, value: 5 }, // False
+                { type: 'compare' as const, target: 'tickets_truth', operator: '==' as const, value: 2 }  // True
+            ]
+        };
+        expect(evaluateCondition(state, cond)).toBe(true);
+
+        // Make both false
+        cond.conditions[1].value = 1;
+        expect(evaluateCondition(state, cond)).toBe(false);
+    });
   });
 
-  it('should reveal the secret weakness when freeing the ghost', () => {
-    // Manuell zum Geist springen
-    engine.getState().currentSceneId = 'K2_geisterraum';
-    
-    const scene = scenes['K2_geisterraum'];
-    const freeChoice = scene.choices.find(c => c.text.includes("Ihn lösen"));
-    
-    if (!freeChoice) throw new Error("Choice 'Ihn lösen' not found");
+  describe('transitionToNextScene', () => {
+    it('should transition to next scene and update history', () => {
+        const currentScene: Scene = { id: 's1', choices: [], narrative: 'Start' };
+        const nextScene: Scene = { id: 's2', choices: [], narrative: 'End' };
+        const choice: Choice = { next: 's2', effects: [] };
+        const scenes = { 's1': currentScene, 's2': nextScene };
 
-    engine.makeChoice(freeChoice);
+        // Ensure state matches current scene
+        state.current_scene_id = 's1';
 
-    expect(engine.getState().flags.geist_befreit).toBe(true);
-    expect(engine.getState().flags.knows_secret_weakness).toBe(true); // Der neue Hinweis
-    expect(engine.getState().currentSceneId).toBe("K2_geister_nachklang");
+        transitionToNextScene(state, currentScene, choice, scenes);
+
+        expect(state.current_scene_id).toBe('s2');
+        expect(state.history).toHaveLength(1);
+        expect(state.history[0].scene_id).toBe('s1');
+        expect(state.visited_scene_ids).toContain('s2');
+    });
+
+    it('should handle ending transition', () => {
+        const currentScene: Scene = { id: 's1', choices: [], narrative: 'Start' };
+        const choice: Choice = { ending: 'end_A', effects: [] };
+        const scenes = { 's1': currentScene };
+
+        transitionToNextScene(state, currentScene, choice, scenes);
+
+        expect(state.isGameOver).toBe(true);
+        expect(state.endingId).toBe('end_A');
+    });
+
+    it('should apply station_end drift rule', () => {
+        // Rule: If scene has tag 'station_end', memory_drift += 1, station_count += 1
+        const currentScene: Scene = {
+            id: 's_end',
+            choices: [],
+            narrative: 'Station',
+            tags: ['station_end']
+        };
+        const nextScene: Scene = { id: 's_next', choices: [], narrative: 'Next' };
+        const choice: Choice = { next: 's_next', effects: [] };
+        const scenes = { 's_end': currentScene, 's_next': nextScene };
+
+        state.pressure.memory_drift = 0;
+        state.station_count = 0;
+
+        transitionToNextScene(state, currentScene, choice, scenes);
+
+        expect(state.pressure.memory_drift).toBe(1);
+        expect(state.station_count).toBe(1);
+    });
+    
+    it('should apply choice effects before transition', () => {
+        const currentScene: Scene = { id: 's1', choices: [], narrative: 'Start' };
+        const nextScene: Scene = { id: 's2', choices: [], narrative: 'Next' };
+        const choice: Choice = {
+            next: 's2',
+            effects: [{ type: 'inc', target: 'tickets_truth', value: 1 }]
+        };
+        const scenes = { 's1': currentScene, 's2': nextScene };
+
+        state.tickets.tickets_truth = 0;
+        transitionToNextScene(state, currentScene, choice, scenes);
+
+        expect(state.tickets.tickets_truth).toBe(1);
+    });
   });
 });
