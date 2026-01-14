@@ -12,7 +12,7 @@
   - Features beschreiben jetzt NACHTZUG 19 Story-Mechaniken (Tickets, Memory Drift, Kontrollen)
   - Engine-Features hervorgehoben (Content/Domain/UI Separation, deterministische Engine)
   - Content-Format aktualisiert (Scene/Choice Schema, State-Modell, Canon Rules)
-  - Legacy-Story "Schattenbibliothek" als Referenz-Implementation markiert
+  - Legacy-Story "Schattenbibliothek" entfernt
 
 - **ARCHITECTURE.md**: Erweitert
   - Content Layer: NACHTZUG 19 als Haupt-Projekt dokumentiert
@@ -21,8 +21,8 @@
 
 - **Gelöschte Dateien** (veraltet):
   - `schattenbibliothek_nareth.md` (alte Story, veraltet)
-  - `Das Magische Zauberbuch - Vollständige Projektdoku.md` (anderes Projekt, nicht relevant)
-  - `Magisches_Zauberbuch_Konzept.md` (anderes Projekt, nicht relevant)
+  - `Das Magische Zauberbuch - Vollständige Projektdoku.md` (anderes Projekt, nicht relevant, entfernt)
+  - `Magisches_Zauberbuch_Konzept.md` (anderes Projekt, nicht relevant, entfernt)
 
 #### Neue Dokumentations-Struktur:
 ```

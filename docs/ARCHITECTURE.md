@@ -42,8 +42,8 @@ src/
 │       └── index.ts       # All Game Types
 │
 └── content/                # Story Content & Data
-    └── legacy/            # Current Story (Schattenbibliothek)
-        └── storyData.ts   # Scenes, Endings, Initial Stats
+    └── legacy/            # Veraltete Story (Schattenbibliothek)
+        └── storyData.ts   # Legacy-Implementation (entfernt)
 ```
 
 ## Layer-Verantwortlichkeiten
@@ -114,11 +114,11 @@ src/
 **Zweck**: Story-Daten, Kapitel, Szenen, Dialoge
 
 #### 4.1 Legacy (`content/legacy/`)
-- **`storyData.ts`**: Referenz-Story (Schattenbibliothek von Nareth)
+- **`storyData.ts`**: Veraltete Story (Schattenbibliothek von Nareth)
   - Scene Definitions
   - Endings
   - Initial Stats
-  - **Status**: Spielbar, aber veraltet. Dient als Referenz-Implementation.
+  - **Status**: Entfernt. Wurde als Referenz-Implementation verwendet.
 
 #### 4.2 NACHTZUG 19 (`content/nachtzug19/`) – **Haupt-Projekt**
 Neue Story-Implementation nach strikten Canon Rules (siehe `NACHTZUG_19_RULES.md`):
@@ -270,7 +270,7 @@ Siehe `docs/CHANGELOG.md` für Details.
 
 ### ✅ Abgeschlossen
 - Content/Domain/UI Separation implementiert
-- Legacy-Story "Schattenbibliothek von Nareth" funktionsfähig
+- Legacy-Story "Schattenbibliothek von Nareth" entfernt
 - Game Engine mit Stats, Flags, Inventory
 - UI-Komponenten (Book Layout, Typewriter, Atmosphere Effects)
 - Test-Setup (Vitest)

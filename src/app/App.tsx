@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { GameEngine } from '../domain/engine/gameEngine';
 import { GameState } from '../domain/types';
-import { loadNachtzug19Story, loadLegacyStory, StoryBundle } from '../domain/engine/loadStory';
+import { loadNachtzug19Story, StoryBundle } from '../domain/engine/loadStory';
 import { validateContent, printValidationResult } from '../domain/engine/validateContent';
 import StoryView from '../ui/components/StoryView';
 import { EndingView } from '../ui/components/EndingView';
@@ -15,7 +15,7 @@ function App() {
   const [engine, setEngine] = useState<GameEngine | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [view, setView] = useState<'story-select' | 'start' | 'game' | 'ending'>('story-select');
-  const [selectedStory, setSelectedStory] = useState<'nachtzug19' | 'legacy' | null>(null);
+  const [selectedStory, setSelectedStory] = useState<'nachtzug19' | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
@@ -38,31 +38,22 @@ function App() {
   }, [engine]);
 
   // Load Story
-  const handleSelectStory = async (storyType: 'nachtzug19' | 'legacy') => {
+  const handleSelectStory = async () => {
     setIsLoading(true);
     try {
-      let storyBundle: StoryBundle;
+      const storyBundle = await loadNachtzug19Story();
+      console.log('[App] Loaded NACHTZUG 19 story');
 
-      if (storyType === 'nachtzug19') {
-        storyBundle = await loadNachtzug19Story();
-        console.log('[App] Loaded NACHTZUG 19 story');
-      } else {
-        storyBundle = await loadLegacyStory();
-        console.log('[App] Loaded Legacy story');
-      }
+      // Validate Content
+      const validationResult = validateContent(
+        storyBundle.startSceneId,
+        storyBundle.scenes,
+        storyBundle.endings
+      );
+      printValidationResult(validationResult);
 
-      // Validate Content (nur für nachtzug19)
-      if (storyType === 'nachtzug19') {
-        const validationResult = validateContent(
-          storyBundle.startSceneId,
-          storyBundle.scenes,
-          storyBundle.endings
-        );
-        printValidationResult(validationResult);
-
-        if (!validationResult.valid) {
-          alert('Content-Validierung fehlgeschlagen! Siehe Konsole für Details.');
-        }
+      if (!validationResult.valid) {
+        alert('Content-Validierung fehlgeschlagen! Siehe Konsole für Details.');
       }
 
       // Create Engine
@@ -74,7 +65,7 @@ function App() {
 
       setEngine(newEngine);
       setGameState(newEngine.getState());
-      setSelectedStory(storyType);
+      setSelectedStory('nachtzug19');
       setView('start');
     } catch (error) {
       console.error('[App] Failed to load story:', error);
@@ -129,10 +120,10 @@ function App() {
                 Story Auswählen
               </h1>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                 {/* Nachtzug19 */}
                 <button
-                  onClick={() => handleSelectStory('nachtzug19')}
+                  onClick={() => handleSelectStory()}
                   disabled={isLoading}
                   className="border-2 border-accent bg-paper hover:bg-accent/10 p-6 rounded-lg transition-colors disabled:opacity-50"
                 >
@@ -145,23 +136,6 @@ function App() {
                   </p>
                   <div className="mt-4 text-xs text-accent/60">
                     MVP: Kapitel 1-2 spielbar
-                  </div>
-                </button>
-
-                {/* Legacy */}
-                <button
-                  onClick={() => handleSelectStory('legacy')}
-                  disabled={isLoading}
-                  className="border-2 border-ink/20 bg-paper hover:bg-ink/5 p-6 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  <h2 className="font-title text-2xl text-ink uppercase mb-2">
-                    📖 Legacy Story
-                  </h2>
-                  <p className="text-sm text-ink/60">
-                    Die Schattenbibliothek von Nareth. Klassisches RPG-System mit Stats und Inventar.
-                  </p>
-                  <div className="mt-4 text-xs text-ink/40">
-                    Referenz-Implementation
                   </div>
                 </button>
               </div>
@@ -189,7 +163,7 @@ function App() {
                     onMakeChoice={(choice) => engine.makeChoice(choice)}
                     settings={settings}
                     gameState={gameState}
-                    storyMode={selectedStory || 'legacy'}
+                    storyMode={selectedStory || 'nachtzug19'}
                 />
             </div>
         )}

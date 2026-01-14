@@ -69,24 +69,4 @@ export async function loadNachtzug19Story(): Promise<StoryBundle> {
   );
 }
 
-/**
- * Lädt die Legacy-Story (Schattenbibliothek von Nareth)
- */
-export async function loadLegacyStory(): Promise<StoryBundle> {
-  const { scenes, endings } = await import('../../content/legacy/storyData');
 
-  // Legacy-Story hat kein Manifest, erstelle eins
-  const legacyManifest: Manifest = {
-    id: 'legacy',
-    title: 'Die Schattenbibliothek von Nareth',
-    start_scene_id: 'P0_Intro',
-    chapters: []
-  };
-
-  return {
-    manifest: legacyManifest,
-    scenes,
-    endings,
-    startSceneId: 'P0_Intro'
-  };
-}

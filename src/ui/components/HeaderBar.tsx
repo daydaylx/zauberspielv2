@@ -9,7 +9,7 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({ title, onMenuToggle }) => 
   return (
     <div className="w-full h-12 flex items-center justify-between px-4 md:px-8 border-b border-white/5 bg-midnight/50 backdrop-blur-sm fixed top-0 z-50">
       <div className="font-title text-accent text-sm tracking-[0.2em] uppercase opacity-80">
-        Das Magische Zauberbuch
+        Nachtzug 19
       </div>
       
       <div className="font-serif text-parchment text-lg italic opacity-60 hidden md:block">

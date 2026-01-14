@@ -16,15 +16,15 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onSettings })
         {/* Logo / Buch Icon */}
         <div className="w-32 h-32 mx-auto mb-8 text-accent animate-float opacity-90">
              <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full drop-shadow-[0_0_15px_rgba(192,160,98,0.3)]">
-                <path d="M12 3v18c0-4.42 3.58-8 8-8V3c-4.42 0-8 3.58-8 8zm0 0c0-4.42-3.58-8-8-8v10c4.42 0 8 3.58 8 8V3z" />
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
              </svg>
         </div>
 
         <h1 className="font-title text-4xl md:text-6xl lg:text-7xl text-parchment mb-4 tracking-widest drop-shadow-lg">
-          Schattenbibliothek
+          Nachtzug 19
         </h1>
         <h2 className="font-serif text-xl md:text-2xl text-accent/80 italic mb-12">
-          Ein Abenteuer in Nareth
+          Ein psychologisches Mystery-Adventure
         </h2>
 
         <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
@@ -32,7 +32,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onSettings })
             onClick={onStart}
             className="w-64 py-4 bg-accent text-midnight font-title font-bold text-lg tracking-[0.2em] uppercase rounded hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(192,160,98,0.2)]"
           >
-            Buch öffnen
+            Einsteigen
           </button>
 
           <button 
@@ -44,7 +44,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onSettings })
         </div>
 
         <p className="mt-16 text-white/20 text-xs font-mono">
-          v1.0 • Interaktives Textadventure
+          v1.0 • Psychologisches Mystery-Adventure
         </p>
       </div>
     </div>
