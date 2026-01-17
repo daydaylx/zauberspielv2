@@ -3,9 +3,10 @@ import React from 'react';
 interface StartScreenProps {
   onStart: () => void;
   onSettings: () => void;
+  onDebug?: () => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onSettings }) => {
+export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onSettings, onDebug }) => {
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center relative overflow-hidden bg-midnight">
       {/* Hintergrund Animation */}
@@ -43,7 +44,16 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onSettings })
           </button>
         </div>
 
-        <p className="mt-16 text-white/20 text-xs font-mono">
+        {onDebug && (
+          <button
+            onClick={onDebug}
+            className="mt-10 text-parchment/60 hover:text-accent font-mono text-xs uppercase tracking-wide"
+          >
+            Debug Player
+          </button>
+        )}
+
+        <p className="mt-6 text-white/20 text-xs font-mono">
           v1.0 • Psychologisches Mystery-Adventure
         </p>
       </div>

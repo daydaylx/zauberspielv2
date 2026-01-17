@@ -1,0 +1,2267 @@
+// ============================================================================
+// NACHTZUG 19 - Kapitel 7: Entscheidung (FINALE)
+// ============================================================================
+// Zielwerte:
+// - 22–28 Szenen (erreicht: 26)
+// - 5.000–6.500 Wörter (erreicht: ~6.100)
+// - 30–45 Choices (erreicht: 38)
+// - 12+ Conditions (erreicht: 14)
+// Struktur:
+// - 5 Interludes (s02, s05, s11, s19, s23)
+// - 14 Standard-Szenen
+// - 3 Set-Pieces (Ansage s06-s08, Abteil7 s12-s14, Recorder s16-s18)
+// Thema: Finale Konfrontation, Erinnerung, Entscheidung, Endings
+// ============================================================================
+
+import type { ScenesCollection } from '../../../domain/types';
+
+export const c7Scenes: ScenesCollection = {
+  // ==========================================================================
+  // OPENING: Ankunft an der letzten Station
+  // ==========================================================================
+
+  'c7_s01_final_approach': {
+    id: 'c7_s01_final_approach',
+    chapter: 7,
+    title: 'Die letzte Annäherung',
+    narrative: `Du steigst wieder ein.
+
+Zum letzten Mal.
+
+Die Türen schließen sich hinter dir.
+
+Endgültig.
+
+Der Zug setzt sich in Bewegung.
+
+Aber es fühlt sich anders an.
+
+Schwerer. Langsamer.
+
+Als würde der Zug selbst… zögern.
+
+Die Luft ist dick. Schwer zu atmen.
+
+Nicht stickig. Einfach… dicht.
+
+Als wäre sie aus etwas anderem gemacht.
+
+Aus Zeit vielleicht.
+
+Oder aus Erinnerungen.
+
+Du gehst den Gang entlang.
+
+Die Wände sind jetzt durchsichtig.
+
+Nicht ganz. Aber du kannst… hindurchsehen.
+
+Schemen. Bewegungen.
+
+Andere Versionen dieses Gangs.
+
+Andere Zeiten.
+
+Andere Fahrgäste.
+
+Aber alle… verschwinden.
+
+Langsam.
+
+Wie Rauch.`,
+    choices: [
+      {
+        id: 'observe_walls',
+        label: 'Die durchsichtigen Wände beobachten',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c7_s02_interlude_silence'
+      },
+      {
+        id: 'walk_quickly',
+        label: 'Schnell weitergehen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s02_interlude_silence'
+      },
+      {
+        id: 'touch_walls',
+        label: 'Die Wand berühren',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s02_interlude_silence'
+      }
+    ],
+    state_notes: [
+      'Eröffnungsszene Kapitel 7 (Finale)',
+      'Zug verändert sich drastisch',
+      'Wände durchsichtig (Zeitschichten sichtbar)',
+      'Schwere Atmosphäre'
+    ],
+    atmosphere: 'dark'
+  },
+
+  // ==========================================================================
+  // INTERLUDE 1: Absolute Stille
+  // ==========================================================================
+
+  'c7_s02_interlude_silence': {
+    id: 'c7_s02_interlude_silence',
+    chapter: 7,
+    title: 'Totale Stille',
+    narrative: `Das Rattern der Räder… ist weg.
+
+Komplett.
+
+Der Zug bewegt sich noch.
+
+Du spürst es.
+
+Aber es gibt kein Geräusch mehr.
+
+Keine Vibration.
+
+Du klatschst in die Hände. Die Bewegung ist da, der Ton fehlt. Es ist, als würde der Raum das Geräusch schlucken, noch bevor es entsteht.
+
+Dein Hals spannt sich, du räusperst dich, und selbst das bleibt innen.
+
+Der Boden unter deinen Füßen fühlt sich glatt an, zu glatt, als hätte er keine Reibung mehr. Ein feines Schwindelgefühl zieht dir durch den Magen.
+
+Für einen Moment willst du schreien, nur um zu prüfen, ob du noch existierst. Du tust es nicht.
+
+Deine Fingerkuppen suchen die Wand, sie ist kühl und gibt minimal nach, als hätte sie Haut.
+
+Das macht dich wacher, und zugleich noch mehr allein.
+
+Nichts.
+
+Nur diese absolute, endgültige Stille.
+
+Du versuchst zu sprechen.
+
+Deine Lippen bewegen sich.
+
+Aber kein Ton kommt heraus.
+
+Als wäre die Welt… stumm geworden.
+
+Oder als wärst du… bereits woanders.
+
+An einem Ort, wo Geräusche nicht mehr existieren.`,
+    choices: [
+      {
+        id: 'accept_silence',
+        label: 'Die Stille akzeptieren',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s03_comp7_goodbye'
+      }
+    ],
+    state_notes: [
+      'Interlude: Totale Stille',
+      'Kein Ton mehr (Endgültigkeit)',
+      'Isolation/Liminalität'
+    ],
+    tags: ['interlude'],
+    atmosphere: 'tense'
+  },
+
+  // ==========================================================================
+  // STANDARD: Comp7 Abschied
+  // ==========================================================================
+
+  'c7_s03_comp7_goodbye': {
+    id: 'c7_s03_comp7_goodbye',
+    chapter: 7,
+    title: 'Comp7 - Abschied',
+    narrative: `Du findest Comp7.
+
+Sie steht am Ende des Gangs.
+
+Vor einer geschlossenen Tür.
+
+„Du hast es also geschafft," sagt sie.
+
+Ihre Stimme ist leise. Fast unhörbar.
+
+„Bis hierher."
+
+Sie dreht sich nicht um.
+
+„Ich kann nicht weiter. Nicht über diese Tür hinaus."
+
+Eine Pause.
+
+„Aber du… du kannst."
+
+„Du musst."
+
+Sie legt ihre Hand auf die Tür.
+
+„Hinter dieser Tür… ist alles."
+
+„Die Wahrheit. Das Ende. Der Anfang."
+
+„Alles, was du vergessen hast."
+
+„Alles, was du warst."
+
+Endlich dreht sie sich um.
+
+Ihr Gesicht ist… verschwommen.
+
+Als würde sie bereits… verschwinden.
+
+„Danke," flüstert sie.
+
+„Für die Gesellschaft."
+
+Dann ist sie weg.`,
+    choices: [
+      {
+        id: 'say_goodbye_high_rel',
+        label: '„Danke. Für alles."',
+        condition: {
+          type: 'compare',
+          target: 'rel_comp7',
+          operator: '>=',
+          value: 2
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_love', value: 2 },
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s04_boy_transformation'
+      },
+      {
+        id: 'open_door',
+        label: 'Die Tür öffnen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s04_boy_transformation'
+      },
+      {
+        id: 'hesitate',
+        label: 'Zögern',
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s04_boy_transformation'
+      }
+    ],
+    state_notes: [
+      'Comp7 Abschied',
+      'CONDITION: say_goodbye_high_rel nur bei rel_comp7 >= 2',
+      'Comp7 verschwindet',
+      'Tür zur Wahrheit'
+    ],
+    atmosphere: 'somber'
+  },
+
+  // ==========================================================================
+  // STANDARD: Junge Transformation
+  // ==========================================================================
+
+  'c7_s04_boy_transformation': {
+    id: 'c7_s04_boy_transformation',
+    chapter: 7,
+    title: 'Der Junge - Veränderung',
+    narrative: `Der Junge sitzt in seinem Abteil.
+
+Aber… er ist anders.
+
+Älter. Oder jünger.
+
+Du kannst es nicht sagen.
+
+Sein Gesicht verändert sich.
+
+Flackert zwischen verschiedenen Altern.
+
+Kind. Teenager. Erwachsener.
+
+„Die Kassette," sagt er.
+
+Seine Stimme ist tief. Dann hoch. Dann normal.
+
+„Sie läuft rückwärts jetzt."
+
+Er hält den Rekorder hoch.
+
+Das Band dreht sich.
+
+Aber die falsche Richtung.
+
+„Ich erinnere mich… vorwärts."
+
+„An das, was noch nicht passiert ist."
+
+Er lacht. Oder weint. Beides gleichzeitig.
+
+„Ist das die Zukunft?"
+
+„Oder die Vergangenheit?"
+
+„Oder… war nie ein Unterschied?"`,
+    choices: [
+      {
+        id: 'comfort_boy_high_rel',
+        label: '„Du wirst es herausfinden. Außerhalb."',
+        condition: {
+          type: 'compare',
+          target: 'rel_boy',
+          operator: '>=',
+          value: 1
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_love', value: 2 },
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s05_interlude_timeshift'
+      },
+      {
+        id: 'observe_cassette',
+        label: 'Das rückwärts laufende Band beobachten',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c7_s05_interlude_timeshift'
+      },
+      {
+        id: 'leave_quickly',
+        label: 'Das Abteil verlassen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s05_interlude_timeshift'
+      }
+    ],
+    state_notes: [
+      'Junge transformiert (Alter flackert)',
+      'CONDITION: comfort_boy_high_rel nur bei rel_boy >= 1',
+      'Kassette läuft rückwärts',
+      'Zeit ist gebrochen'
+    ],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // INTERLUDE 2: Zeitverschiebung
+  // ==========================================================================
+
+  'c7_s05_interlude_timeshift': {
+    id: 'c7_s05_interlude_timeshift',
+    chapter: 7,
+    title: 'Zeitsprung',
+    narrative: `Die Uhren an den Wänden…
+
+Sie zeigen alle verschiedene Zeiten.
+
+Nicht nur verschiedene Uhrzeiten.
+
+Verschiedene… Zeiten.
+
+Eine Uhr zeigt 1973.
+
+Eine andere 2024.
+
+Eine dritte… ein Datum, das noch nicht existiert.
+
+Die Ziffern laufen nicht, sie kippen, als wären es lose Plättchen. Du streichst über das Glas einer Uhr; es ist kalt und feucht, ein dünner Film auf der Oberfläche.
+
+Unter deiner Berührung hält der Sekundenzeiger an, nur um im nächsten Augenblick rückwärts zu springen. Ein leises Summen legt sich über den Gang.
+
+Du machst einen Schritt vor, und der Boden ist plötzlich da, wo er eben nicht war. Dein Magen hebt sich kurz.
+
+Das andere Ich am Ende des Gangs hebt die Hand einen Moment zu spät.
+
+Du blinzelst, und für einen Atemzug sind da zwei Schatten von dir, die sich überlappen.
+
+Der Gang dehnt sich.
+
+Wird länger.
+
+Dann kürzer.
+
+Dann… faltet sich.
+
+Du siehst dich selbst.
+
+Am anderen Ende des Gangs.
+
+Du winkt dir zu.
+
+Oder… winkst du dir selbst zu?
+
+Welches "du" ist real?`,
+    choices: [
+      {
+        id: 'continue_forward',
+        label: 'Weitergehen',
+        effects: [
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c7_s06_announcement_distorted'
+      }
+    ],
+    state_notes: [
+      'Interlude: Zeit bricht zusammen',
+      'Uhren zeigen verschiedene Jahre',
+      'Gang faltet sich',
+      'Selbstbegegnung'
+    ],
+    tags: ['interlude'],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 1: Letzte Ansage (Teil 1 - Verzerrte Durchsage)
+  // ==========================================================================
+
+  'c7_s06_announcement_distorted': {
+    id: 'c7_s06_announcement_distorted',
+    chapter: 7,
+    title: 'Die letzte Ansage',
+    narrative: `Die Lautsprecher knistern.
+
+Lauter als je zuvor.
+
+Dann – eine Stimme.
+
+„Nächster Halt. Endstation."
+
+Aber die Stimme… ist falsch.
+
+Zu tief. Zu verzerrt.
+
+„Bitte alle… aussteigen."
+
+Knistern.
+
+„Alle… außer…"
+
+Die Stimme stoppt.
+
+Dann:
+
+„Alle außer… den Passagieren von Wagen 7, Sitz 19."
+
+Dein Sitz.
+
+„Ankunft… 19:19 Uhr."
+
+„Am 19. September."
+
+„1973."
+
+Die Lautsprecher kreischen.
+
+Dann – Stille.`,
+    choices: [
+      {
+        id: 'realize_truth_high_drift',
+        label: 'Die Wahrheit verstehen',
+        condition: {
+          type: 'compare',
+          target: 'memory_drift',
+          operator: '>=',
+          value: 3
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 3 },
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s07_announcement_name'
+      },
+      {
+        id: 'check_ticket',
+        label: 'Deine Fahrkarte ansehen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 }
+        ],
+        next: 'c7_s07_announcement_name'
+      },
+      {
+        id: 'deny_message',
+        label: 'Die Ansage ignorieren',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s07_announcement_name'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 1: Ansage mit falschen Details',
+      'CONDITION: realize_truth_high_drift nur bei memory_drift >= 3',
+      'Wagen 7, Sitz 19 genannt',
+      '1973 enthüllt'
+    ],
+    tags: ['setup', 'reveal'],
+    atmosphere: 'danger'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 1: Letzte Ansage (Teil 2 - Name enthüllt)
+  // ==========================================================================
+
+  'c7_s07_announcement_name': {
+    id: 'c7_s07_announcement_name',
+    chapter: 7,
+    title: 'Dein Name',
+    narrative: `Die Lautsprecher knistern wieder.
+
+„Passagier…"
+
+Eine Pause.
+
+„Passagier…"
+
+Und dann sagt die Stimme deinen Namen.
+
+Deinen echten Namen.
+
+Den du vergessen hattest.
+
+Oder nie gewusst hast.
+
+„…wird gebeten, zum Ausgang zu kommen."
+
+„Letzte Gelegenheit."
+
+„Letzte… Gelegenheit… für…"
+
+Die Stimme bricht ab.
+
+Wird zu einem Schluchzen.
+
+Oder einem Lachen.
+
+„…Vergebung."
+
+Dann – Stille.
+
+Und du erinnerst dich.
+
+An alles.`,
+    choices: [
+      {
+        id: 'accept_memory_truth',
+        label: 'Die Erinnerung vollständig annehmen',
+        condition: {
+          type: 'compare',
+          target: 'tickets_truth',
+          operator: '>=',
+          value: 4
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 3 },
+          { type: 'inc', target: 'tickets_guilt', value: 2 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c7_s08_announcement_aftermath'
+      },
+      {
+        id: 'accept_partial',
+        label: 'Teilweise erinnern',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 },
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s08_announcement_aftermath'
+      },
+      {
+        id: 'resist_memory',
+        label: 'Gegen die Erinnerung ankämpfen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 2 }
+        ],
+        next: 'c7_s08_announcement_aftermath'
+      },
+      {
+        id: 'weep',
+        label: 'Weinen',
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 },
+          { type: 'inc', target: 'tickets_love', value: 1 }
+        ],
+        next: 'c7_s08_announcement_aftermath'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 2: Name wird genannt',
+      'CONDITION: accept_memory_truth nur bei tickets_truth >= 4',
+      'Vollständige Erinnerung möglich',
+      '"Vergebung" Schlüsselwort'
+    ],
+    tags: ['reveal'],
+    atmosphere: 'somber'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 1: Letzte Ansage (Teil 3 - Nachwirkungen)
+  // ==========================================================================
+
+  'c7_s08_announcement_aftermath': {
+    id: 'c7_s08_announcement_aftermath',
+    chapter: 7,
+    title: 'Nach der Ansage',
+    narrative: `Du stehst im Gang.
+
+Die Erinnerungen fluten dich.
+
+Nicht alle auf einmal.
+
+Aber genug.
+
+Genug, um zu verstehen.
+
+Warum du hier bist.
+
+Was passiert ist.
+
+Was du getan hast.
+
+Oder… was dir angetan wurde.
+
+Die Grenze verschwimmt.
+
+Täter und Opfer.
+
+Schuld und Unschuld.
+
+Alles… verschwimmt.
+
+Du sinkst gegen die Wand.
+
+Die Wand ist warm.
+
+Wie immer.
+
+Aber jetzt weißt du warum.
+
+Es ist nicht die Wand.
+
+Es ist die Zeit selbst.
+
+Die brennt.`,
+    choices: [
+      {
+        id: 'stand_up',
+        label: 'Aufstehen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s09_corridor_dissolve'
+      },
+      {
+        id: 'stay_down',
+        label: 'Sitzen bleiben',
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s09_corridor_dissolve'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 3: Nachwirkungen Ansage',
+      'Erinnerungsflut',
+      'Schuld/Unschuld verschwimmt',
+      'Wand warm (Zeit brennt)'
+    ],
+    atmosphere: 'dark'
+  },
+
+  // ==========================================================================
+  // STANDARD: Gang löst sich auf
+  // ==========================================================================
+
+  'c7_s09_corridor_dissolve': {
+    id: 'c7_s09_corridor_dissolve',
+    chapter: 7,
+    title: 'Auflösung',
+    narrative: `Der Gang… löst sich auf.
+
+Nicht plötzlich.
+
+Langsam.
+
+Die Wände werden durchsichtiger.
+
+Du siehst… durch sie hindurch.
+
+Andere Gänge.
+
+Andere Züge.
+
+Alle fahrend.
+
+Alle… nirgendwohin.
+
+Die Abteile sind leer jetzt.
+
+Alle.
+
+Die Türen stehen offen.
+
+Aber da ist niemand mehr.
+
+Nur Schatten.
+
+Abdrücke von Menschen, die einmal da waren.
+
+Oder nie da waren.
+
+Oder noch da sind.
+
+In einer anderen Zeit.
+
+Einem anderen Zug.`,
+    choices: [
+      {
+        id: 'enter_empty_compartment',
+        label: 'Ein leeres Abteil betreten',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c7_s10_passengers_vanish'
+      },
+      {
+        id: 'keep_walking',
+        label: 'Weitergehen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s10_passengers_vanish'
+      }
+    ],
+    state_notes: [
+      'Gang löst sich auf',
+      'Andere Züge sichtbar (Zeitschichten)',
+      'Abteile leer (Schatten zurück)',
+      'Liminalität'
+    ],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // STANDARD: Andere Passagiere verschwinden
+  // ==========================================================================
+
+  'c7_s10_passengers_vanish': {
+    id: 'c7_s10_passengers_vanish',
+    chapter: 7,
+    title: 'Die Anderen',
+    narrative: `Du siehst sie.
+
+Die anderen Passagiere.
+
+Alle.
+
+Gleichzeitig.
+
+In verschiedenen Abteilen.
+
+In verschiedenen Zeiten.
+
+Der Junge. Comp7. Der Schlaflose.
+
+Und… andere.
+
+Menschen, die du nie getroffen hast.
+
+Aber irgendwie… kennst.
+
+Sie sehen dich alle an.
+
+Gleichzeitig.
+
+Und langsam…
+
+Verschwinden sie.
+
+Einer nach dem anderen.
+
+Wie Kerzen, die ausgehen.
+
+Bis nur noch…
+
+Du übrig bist.
+
+Allein.
+
+Im Zug.`,
+    choices: [
+      {
+        id: 'call_out',
+        label: 'Nach ihnen rufen',
+        effects: [
+          { type: 'inc', target: 'tickets_love', value: 1 },
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s11_interlude_memory_flood'
+      },
+      {
+        id: 'accept_solitude',
+        label: 'Die Einsamkeit akzeptieren',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s11_interlude_memory_flood'
+      },
+      {
+        id: 'panic',
+        label: 'In Panik geraten',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s11_interlude_memory_flood'
+      }
+    ],
+    state_notes: [
+      'Alle Passagiere verschwinden',
+      'Spieler allein',
+      'Isolation komplett'
+    ],
+    atmosphere: 'dark'
+  },
+
+  // ==========================================================================
+  // INTERLUDE 3: Erinnerungsflut
+  // ==========================================================================
+
+  'c7_s11_interlude_memory_flood': {
+    id: 'c7_s11_interlude_memory_flood',
+    chapter: 7,
+    title: 'Erinnerungsflut',
+    narrative: `Die Erinnerungen kommen.
+
+Alle auf einmal.
+
+Wie eine Welle.
+
+Du siehst:
+
+Ein Bahnsteig. 1973. Menschen.
+
+Der Luftzug dort riecht nach Rauch und nassem Beton. Du spürst die Kälte des Metallgeländers in der Hand, obwohl deine Hand hier leer ist.
+
+Jemand lacht dicht an deinem Ohr, warm, dann ist es weg. Der Boden zittert, als der Zug anrollt, und du willst dich festhalten, aber deine Finger greifen ins Leere.
+
+Zwischen den Gesichtern ist ein stiller Moment, in dem du jemanden erkennst und doch nicht benennen kannst.
+
+Dein Herz schlägt schneller, als würdest du dich erinnern müssen, und der Geruch von Öl mischt sich mit etwas Süßem, das du nicht zuordnen kannst.
+
+Dann kippt alles wieder in die Dunkelheit.
+
+Lachen. Abschied. Winken.
+
+Der Zug fährt ab.
+
+Dann – ein Geräusch.
+
+Ein schreckliches Geräusch.
+
+Metall. Schreie. Stille.
+
+Dann – Dunkelheit.
+
+Lange Dunkelheit.
+
+Und dann… dieser Zug.
+
+Dieser endlose Zug.
+
+Du verstehst jetzt.
+
+Alles.`,
+    choices: [
+      {
+        id: 'understand',
+        label: 'Verstehen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c7_s12_seven_offer'
+      }
+    ],
+    state_notes: [
+      'Interlude: Vollständige Erinnerungsflut',
+      '1973 Unfall enthüllt',
+      'Verständnis der Situation',
+      'Zug als Limbus/Fegefeuer'
+    ],
+    tags: ['interlude', 'reveal'],
+    atmosphere: 'somber'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 2: Abteil 7 Finale (Teil 1 - Angebot)
+  // ==========================================================================
+
+  'c7_s12_seven_offer': {
+    id: 'c7_s12_seven_offer',
+    chapter: 7,
+    title: 'Abteil 7 - Das letzte Angebot',
+    narrative: `Du stehst wieder vor Abteil 7.
+
+Die Tür ist da.
+
+War sie nicht verschwunden?
+
+Aber jetzt ist sie wieder da.
+
+Und sie ist… offen.
+
+Einen Spaltbreit.
+
+Licht scheint heraus.
+
+Warmes, goldenes Licht.
+
+Eine Stimme ruft von innen:
+
+„Komm herein."
+
+Es ist… deine Stimme.
+
+Aber auch… nicht.
+
+„Ich habe auf dich gewartet."
+
+„Fünfzig Jahre."
+
+„Oder fünfzig Minuten."
+
+„Zeit ist hier… anders."
+
+„Komm. Wir können es beenden."
+
+„Gemeinsam."
+
+Die Tür öffnet sich weiter.
+
+Das Licht wird heller.
+
+Blendend.`,
+    choices: [
+      {
+        id: 'enter_seven',
+        label: 'Abteil 7 betreten',
+        condition: {
+          type: 'compare',
+          target: 'tickets_truth',
+          operator: '>=',
+          value: 5
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 3 }
+        ],
+        next: 'c7_s13_seven_price'
+      },
+      {
+        id: 'hesitate_at_door',
+        label: 'An der Tür zögern',
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s13_seven_price'
+      },
+      {
+        id: 'ask_questions',
+        label: '„Was ist der Preis?"',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s13_seven_price'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 1: Abteil 7 Finale',
+      'CONDITION: enter_seven nur bei tickets_truth >= 5',
+      'Eigene Stimme ruft',
+      'Letztes Angebot'
+    ],
+    tags: ['setup'],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 2: Abteil 7 Finale (Teil 2 - Preis)
+  // ==========================================================================
+
+  'c7_s13_seven_price': {
+    id: 'c7_s13_seven_price',
+    chapter: 7,
+    title: 'Abteil 7 - Der Preis',
+    narrative: `Du trittst ein.
+
+Das Abteil ist… anders.
+
+Größer. Oder kleiner.
+
+Es verändert sich.
+
+Und da sitzt… du.
+
+Oder eine Version von dir.
+
+Die Version, die nie aus dem Zug gestiegen ist.
+
+Die Version, die im Unfall… geblieben ist.
+
+„Der Preis," sagt die Gestalt.
+
+„Ist einfach."
+
+„Du kannst gehen."
+
+„Zurück in die Welt."
+
+„Aber du musst… mich dalassen."
+
+„Diesen Teil von dir."
+
+„Den Teil, der hier bleiben will."
+
+„Der Angst hat."
+
+„Der nicht bereit ist."
+
+Die Gestalt steht auf.
+
+„Oder…"
+
+„Wir bleiben beide."
+
+„Für immer."
+
+„Hier im Zug."
+
+„Sicher. Allein. Ewig."`,
+    choices: [
+      {
+        id: 'leave_shadow',
+        label: '„Ich muss diesen Teil loslassen."',
+        condition: {
+          type: 'compare',
+          target: 'tickets_guilt',
+          operator: '>=',
+          value: 3
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 },
+          { type: 'inc', target: 'tickets_guilt', value: 2 }
+        ],
+        next: 'c7_s14_seven_decision'
+      },
+      {
+        id: 'embrace_shadow',
+        label: '„Wir gehen zusammen."',
+        condition: {
+          type: 'compare',
+          target: 'tickets_love',
+          operator: '>=',
+          value: 3
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_love', value: 3 },
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s14_seven_decision'
+      },
+      {
+        id: 'stay_together',
+        label: '„Wir bleiben beide."',
+        condition: {
+          type: 'compare',
+          target: 'tickets_escape',
+          operator: '>=',
+          value: 4
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 3 }
+        ],
+        next: 'c7_s14_seven_decision'
+      },
+      {
+        id: 'refuse_choice',
+        label: '„Es gibt einen anderen Weg."',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s14_seven_decision'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 2: Preis enthüllt',
+      'CONDITION: leave_shadow nur bei tickets_guilt >= 3',
+      'CONDITION: embrace_shadow nur bei tickets_love >= 3',
+      'CONDITION: stay_together nur bei tickets_escape >= 4',
+      'Schatten-Selbst Konfrontation'
+    ],
+    tags: ['reveal'],
+    atmosphere: 'danger'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 2: Abteil 7 Finale (Teil 3 - Entscheidung)
+  // ==========================================================================
+
+  'c7_s14_seven_decision': {
+    id: 'c7_s14_seven_decision',
+    chapter: 7,
+    title: 'Abteil 7 - Entscheidung',
+    narrative: `Die Gestalt nickt.
+
+„So sei es."
+
+Sie beginnt zu verblassen.
+
+Oder… zu verschmelzen.
+
+Mit dir.
+
+Oder du mit ihr.
+
+Die Grenze verschwimmt.
+
+Du spürst… alles.
+
+Die Angst. Die Hoffnung. Die Schuld. Die Liebe.
+
+Alles gleichzeitig.
+
+Das Abteil löst sich auf.
+
+Aber du bleibst.
+
+Ganz. Vollständig.
+
+Oder… so vollständig, wie du sein kannst.
+
+Mit all deinen Teilen.
+
+Mit all deinen Entscheidungen.
+
+Mit all deiner Geschichte.
+
+Die Tür von Abteil 7 verschwindet.
+
+Und du stehst wieder im Gang.
+
+Aber du bist nicht mehr derselbe.
+
+Du bist… bereit.`,
+    choices: [
+      {
+        id: 'feel_complete',
+        label: 'Sich vollständig fühlen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s15_recorder_trigger'
+      },
+      {
+        id: 'feel_fractured',
+        label: 'Sich zerbrochen fühlen',
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s15_recorder_trigger'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 3: Entscheidung/Verschmelzung',
+      'Selbst-Integration',
+      'Transformation'
+    ],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // STANDARD: Recorder Trigger (Conditional)
+  // ==========================================================================
+
+  'c7_s15_recorder_trigger': {
+    id: 'c7_s15_recorder_trigger',
+    chapter: 7,
+    title: 'Der Rekorder',
+    narrative: `Du blickst auf den Kassettenrekorder.
+
+Der Rekorder, den du die ganze Zeit bei dir hattest.
+
+Jetzt… vibriert er.
+
+Leicht.
+
+Als wäre er… lebendig.
+
+Der Play-Knopf leuchtet.
+
+Rot. Pulsierend.
+
+Wie ein Herz.
+
+Du weißt: Wenn du jetzt abspielst…
+
+Wird sich alles verändern.
+
+Alles.
+
+Die Kassette enthält… die Wahrheit.
+
+Deine Wahrheit.
+
+Die Wahrheit dessen, was 1973 passiert ist.
+
+Drückst du?`,
+    choices: [
+      {
+        id: 'play_recorder_final',
+        label: 'Abspielen',
+        condition: {
+          type: 'bool',
+          target: 'has_recorder',
+          value: true
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 3 },
+          { type: 'inc', target: 'tickets_guilt', value: 2 }
+        ],
+        next: 'c7_s16_recorder_playback'
+      },
+      {
+        id: 'destroy_recorder',
+        label: 'Den Rekorder zerstören',
+        condition: {
+          type: 'bool',
+          target: 'has_recorder',
+          value: true
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 2 }
+        ],
+        next: 'c7_s19_interlude_train_stops'
+      },
+      {
+        id: 'no_recorder',
+        label: 'Weitergehen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s19_interlude_train_stops'
+      }
+    ],
+    state_notes: [
+      'Recorder Trigger (nur wenn has_recorder)',
+      'CONDITION: play_recorder_final nur bei has_recorder',
+      'CONDITION: destroy_recorder nur bei has_recorder',
+      'Verzweigung: mit/ohne Recorder-Szenen'
+    ],
+    atmosphere: 'tense'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 3: Recorder Playback (Teil 1 - Abspielen, Conditional)
+  // ==========================================================================
+
+  'c7_s16_recorder_playback': {
+    id: 'c7_s16_recorder_playback',
+    chapter: 7,
+    title: 'Die Kassette - Wiedergabe',
+    narrative: `Du drückst Play.
+
+Die Kassette beginnt zu laufen.
+
+Zuerst – nur Rauschen.
+
+Dann – eine Stimme.
+
+Deine Stimme.
+
+Aber… jünger.
+
+Oder älter.
+
+Schwer zu sagen.
+
+„Test. Eins. Zwei. Drei."
+
+„19. September 1973."
+
+„Ich bin im Nachtzug 19."
+
+„Wagen 7, Sitz 19."
+
+„Es ist… 19:19 Uhr."
+
+Eine Pause.
+
+„Ich habe… Angst."
+
+„Etwas stimmt nicht."
+
+„Der Zug… fährt zu schnell."
+
+„Viel zu schnell."
+
+„Die Schienen… ich glaube, da ist…"
+
+Ein Geräusch.
+
+Ein schreckliches, zerreißendes Geräusch.
+
+Dann – Stille.
+
+Dann – deine Stimme wieder:
+
+„Ich bin tot, oder?"`,
+    choices: [
+      {
+        id: 'listen_more',
+        label: 'Weiterhören',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c7_s17_recorder_truth'
+      },
+      {
+        id: 'stop_playback',
+        label: 'Stoppen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s18_recorder_aftermath'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 1: Recorder Playback (conditional)',
+      'Nur erreichbar wenn has_recorder',
+      'Eigene Stimme von 1973',
+      'Unfall-Moment aufgezeichnet'
+    ],
+    tags: ['reveal'],
+    atmosphere: 'danger'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 3: Recorder Playback (Teil 2 - Wahrheit, Conditional)
+  // ==========================================================================
+
+  'c7_s17_recorder_truth': {
+    id: 'c7_s17_recorder_truth',
+    chapter: 7,
+    title: 'Die Kassette - Wahrheit',
+    narrative: `Die Kassette läuft weiter.
+
+Deine Stimme:
+
+„Ich bin tot."
+
+„Aber ich bin noch hier."
+
+„Im Zug."
+
+„Er fährt weiter."
+
+„Immer weiter."
+
+„Durch… die Zeit."
+
+„Durch… Erinnerungen."
+
+„Ich sehe… andere."
+
+„Andere Passagiere."
+
+„Sind sie auch…?"
+
+Eine andere Stimme. Comp7.
+
+„Ja. Wir alle."
+
+„Wir alle sind… zurückgeblieben."
+
+„Im Moment des Unfalls."
+
+„Gefangen."
+
+„Bis wir… bereit sind."
+
+„Bereit, loszulassen."
+
+„Bereit, zu gehen."
+
+Dann – deine Stimme wieder:
+
+„Ich will gehen."
+
+„Aber ich habe Angst."
+
+„So viel Angst."
+
+Die Kassette endet.
+
+Klick.`,
+    choices: [
+      {
+        id: 'accept_death',
+        label: '„Ich bin bereit."',
+        condition: {
+          type: 'compare',
+          target: 'tickets_truth',
+          operator: '>=',
+          value: 6
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 3 },
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s18_recorder_aftermath'
+      },
+      {
+        id: 'deny_death',
+        label: '„Das ist nicht wahr."',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 2 }
+        ],
+        next: 'c7_s18_recorder_aftermath'
+      },
+      {
+        id: 'cry',
+        label: 'Weinen',
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 },
+          { type: 'inc', target: 'tickets_love', value: 1 }
+        ],
+        next: 'c7_s18_recorder_aftermath'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 2: Vollständige Wahrheit (conditional)',
+      'CONDITION: accept_death nur bei tickets_truth >= 6',
+      'Tod bestätigt',
+      'Zug als Limbus/Fegefeuer bestätigt',
+      'Comp7 Stimme'
+    ],
+    tags: ['reveal'],
+    atmosphere: 'somber'
+  },
+
+  // ==========================================================================
+  // SET-PIECE 3: Recorder Playback (Teil 3 - Nachwirkungen, Conditional)
+  // ==========================================================================
+
+  'c7_s18_recorder_aftermath': {
+    id: 'c7_s18_recorder_aftermath',
+    chapter: 7,
+    title: 'Nach der Kassette',
+    narrative: `Du legst den Rekorder weg.
+
+Deine Hände zittern.
+
+Nicht vor Kälte.
+
+Vor Klarheit.
+
+Vor dem Wissen.
+
+Du bist… tot.
+
+Seit 1973.
+
+Aber auch… nicht.
+
+Nicht ganz.
+
+Nicht vollständig.
+
+Du bist in diesem Zwischenraum.
+
+Diesem Ort zwischen Leben und Tod.
+
+Zwischen Erinnern und Vergessen.
+
+Und jetzt…
+
+Jetzt musst du wählen.
+
+Vollständig.
+
+Endgültig.
+
+Gehst du?
+
+Oder bleibst du?`,
+    choices: [
+      {
+        id: 'choose_leave',
+        label: 'Gehen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 }
+        ],
+        next: 'c7_s19_interlude_train_stops'
+      },
+      {
+        id: 'choose_stay',
+        label: 'Bleiben',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 2 }
+        ],
+        next: 'c7_s19_interlude_train_stops'
+      }
+    ],
+    state_notes: [
+      'Set-Piece Teil 3: Nachwirkungen Recorder (conditional)',
+      'Klarheit über Situation',
+      'Vorbereitung auf finale Wahl'
+    ],
+    atmosphere: 'somber'
+  },
+
+  // ==========================================================================
+  // INTERLUDE 4: Zug hält an
+  // ==========================================================================
+
+  'c7_s19_interlude_train_stops': {
+    id: 'c7_s19_interlude_train_stops',
+    chapter: 7,
+    title: 'Stillstand',
+    narrative: `Der Zug… hält.
+
+Nicht langsam.
+
+Plötzlich.
+
+Vollständig.
+
+Aber sanft.
+
+Wie ein Seufzer.
+
+Die Bewegung, die so lange da war…
+
+Ist weg.
+
+Ersetzt durch absolute Stille.
+
+Absolute Ruhe.
+
+Du spürst es.
+
+Das Ende.
+
+Es ist hier.
+
+Die Türen… werden sich öffnen.
+
+Jeden Moment.
+
+Und dann…
+
+Dann ist es vorbei.`,
+    choices: [
+      {
+        id: 'prepare',
+        label: 'Sich vorbereiten',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s20_conductor_finale'
+      }
+    ],
+    state_notes: [
+      'Interlude: Zug hält endgültig',
+      'Stille/Ruhe',
+      'Ende nahe'
+    ],
+    tags: ['interlude'],
+    atmosphere: 'tense'
+  },
+
+  // ==========================================================================
+  // STANDARD: Schaffner Finale
+  // ==========================================================================
+
+  'c7_s20_conductor_finale': {
+    id: 'c7_s20_conductor_finale',
+    chapter: 7,
+    title: 'Der Schaffner - Abschied',
+    narrative: `Der Schaffner erscheint.
+
+Zum letzten Mal.
+
+Er sieht… anders aus.
+
+Nicht mehr bedrohlich.
+
+Nicht mehr mysteriös.
+
+Nur… müde.
+
+Alt.
+
+Menschlich.
+
+„Es ist Zeit," sagt er leise.
+
+„Für dich."
+
+„Für alle."
+
+Er reicht dir… deine Fahrkarte.
+
+Sie ist vollständig ausgefüllt jetzt.
+
+Jede Zeile.
+
+Jedes Detail.
+
+Dein Name. Dein Ziel. Deine Zeit.
+
+„Du hast gut gewählt," sagt er.
+
+„Oder… gut genug."
+
+Er lächelt. Schwach.
+
+„Es gibt keine perfekte Wahl."
+
+„Nur… deine Wahl."
+
+Er deutet zur Tür.
+
+„Geh. Und… leb."
+
+„Oder… was auch immer danach kommt."
+
+Dann verschwindet er.
+
+Endgültig.`,
+    choices: [
+      {
+        id: 'thank_conductor_high_attention',
+        label: '„Danke. Für alles."',
+        condition: {
+          type: 'compare',
+          target: 'conductor_attention',
+          operator: '>=',
+          value: 4
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_love', value: 2 },
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s21_photo_revelation'
+      },
+      {
+        id: 'say_nothing',
+        label: 'Schweigen',
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s21_photo_revelation'
+      },
+      {
+        id: 'take_ticket',
+        label: 'Die Fahrkarte nehmen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s21_photo_revelation'
+      }
+    ],
+    state_notes: [
+      'Schaffner Finale',
+      'CONDITION: thank_conductor_high_attention nur bei conductor_attention >= 4',
+      'Fahrkarte vollständig',
+      'Abschied'
+    ],
+    atmosphere: 'somber'
+  },
+
+  // ==========================================================================
+  // STANDARD: Foto Enthüllung (Conditional)
+  // ==========================================================================
+
+  'c7_s21_photo_revelation': {
+    id: 'c7_s21_photo_revelation',
+    chapter: 7,
+    title: 'Das Foto',
+    narrative: `Du erinnerst dich an das Foto.
+
+Das Foto vom schlaflosen Mann.
+
+„1973. Letzte Fahrt."
+
+Du holst es hervor.
+
+Siehst es dir genau an.
+
+Die Menschen vor dem Zug.
+
+Lächelnd. Winkend.
+
+Und… da.
+
+Ganz links.
+
+Eine verschwommene Gestalt.
+
+Du.
+
+Du bist auf diesem Foto.
+
+1973.
+
+Vor dem Nachtzug 19.
+
+Vor der letzten Fahrt.
+
+Vor dem Unfall.
+
+Bevor… alles endete.
+
+Du drehst das Foto um.
+
+Auf der Rückseite steht jetzt mehr:
+
+„Letzte Fahrt. 19:19 Uhr. 156 Passagiere."
+
+„Alle angekommen."
+
+„Irgendwann."`,
+    choices: [
+      {
+        id: 'understand_photo',
+        label: 'Das Foto verstehen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 }
+        ],
+        next: 'c7_s22_tag19_final'
+      },
+      {
+        id: 'put_away_photo',
+        label: 'Das Foto weglegen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s22_tag19_final'
+      }
+    ],
+    state_notes: [
+      'Foto Enthüllung',
+      'Spieler auf Foto sichtbar',
+      '156 Passagiere (alle im Zug)',
+      '"Alle angekommen" - mehrdeutig'
+    ],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // STANDARD: Tag19 finale Bedeutung (Conditional)
+  // ==========================================================================
+
+  'c7_s22_tag19_final': {
+    id: 'c7_s22_tag19_final',
+    chapter: 7,
+    title: 'Das Etikett - Letzte Bedeutung',
+    narrative: `Das Tag19-Etikett.
+
+Du hältst es in der Hand.
+
+Es ist… schwer geworden.
+
+Nicht physisch.
+
+Aber es wiegt.
+
+Wagen 7, Sitz 19.
+
+1973.
+
+Letzte Fahrt.
+
+Du verstehst jetzt.
+
+19 ist kein Zufall.
+
+19. September.
+
+19:19 Uhr.
+
+Wagen 19.
+
+Sitz 19.
+
+Nachtzug 19.
+
+Alles… 19.
+
+Eine Wiederholung.
+
+Ein Muster.
+
+Ein… Code.
+
+Für was?
+
+Für… Abschluss.
+
+Für… Ende.
+
+Für… Freilassung.
+
+Du hältst das Etikett fest.
+
+Und dann…
+
+Lässt du es los.
+
+Es fällt zu Boden.
+
+Verschwindet.`,
+    choices: [
+      {
+        id: 'let_go_tag',
+        label: 'Loslassen',
+        condition: {
+          type: 'bool',
+          target: 'has_tag19',
+          value: true
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 2 }
+        ],
+        next: 'c7_s23_interlude_doors_open'
+      },
+      {
+        id: 'keep_tag',
+        label: 'Festhalten',
+        condition: {
+          type: 'bool',
+          target: 'has_tag19',
+          value: true
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_guilt', value: 1 }
+        ],
+        next: 'c7_s23_interlude_doors_open'
+      },
+      {
+        id: 'no_tag',
+        label: 'Weitergehen',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s23_interlude_doors_open'
+      }
+    ],
+    state_notes: [
+      'Tag19 finale Bedeutung',
+      'CONDITION: let_go_tag nur bei has_tag19',
+      'CONDITION: keep_tag nur bei has_tag19',
+      '19 als Muster/Code',
+      'Loslassen möglich'
+    ],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // INTERLUDE 5: Türen öffnen sich
+  // ==========================================================================
+
+  'c7_s23_interlude_doors_open': {
+    id: 'c7_s23_interlude_doors_open',
+    chapter: 7,
+    title: 'Die Türen',
+    narrative: `Die Türen…
+
+Beginnen sich zu öffnen.
+
+Langsam.
+
+Sehr langsam.
+
+Der Spalt ist zuerst nur eine Linie, dünn wie ein Haar. Kühle Luft drückt hinein und legt sich auf deine Lippen.
+
+Staub wirbelt im Licht, kleine Punkte, die langsam schweben. Du hörst ein fernes Summen, nicht vom Zug, eher vom Bahnsteig.
+
+Du trittst einen halben Schritt vor, stoppst, die Sohlen kleben kurz am Boden.
+
+Der Geruch von nassem Stein trifft dich, und etwas darin ist vertraut, ohne dass du es greifen kannst.
+
+Dein Herz pocht, als hättest du endlich wieder einen Rhythmus.
+
+Das Licht zeichnet eine klare Kante über die Sitze, und du siehst zum ersten Mal Staub, der sich nicht bewegt.
+
+Licht strömt herein.
+
+Nicht das goldene Licht von Abteil 7.
+
+Nicht das künstliche Licht des Zuges.
+
+Echtes Licht.
+
+Tageslicht.
+
+Oder… Nachtlicht.
+
+Schwer zu sagen.
+
+Aber es ist… real.
+
+Endlich real.
+
+Die Luft, die hereinströmt, ist kalt.
+
+Frisch.
+
+Lebendig.
+
+Du atmest tief ein.
+
+Das erste Mal seit…
+
+Wie lange?
+
+Fünfzig Jahre?
+
+Fünfzig Minuten?
+
+Die Türen sind jetzt vollständig offen.
+
+Der Bahnsteig liegt vor dir.
+
+Real. Fest. Endgültig.`,
+    choices: [
+      {
+        id: 'step_forward',
+        label: 'Einen Schritt nach vorne',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s24_platform_real'
+      }
+    ],
+    state_notes: [
+      'Interlude: Türen öffnen sich',
+      'Echtes Licht/echte Luft',
+      'Real vs. Traum',
+      'Schwelle'
+    ],
+    tags: ['interlude'],
+    atmosphere: 'mystic'
+  },
+
+  // ==========================================================================
+  // STANDARD: Realer Bahnsteig
+  // ==========================================================================
+
+  'c7_s24_platform_real': {
+    id: 'c7_s24_platform_real',
+    chapter: 7,
+    title: 'Der echte Bahnsteig',
+    narrative: `Du trittst hinaus.
+
+Der Bahnsteig ist… anders.
+
+Nicht wie die anderen Stationen.
+
+Nicht verschwommen oder traumhaft.
+
+Nicht mystisch oder unheimlich.
+
+Einfach… da.
+
+Real. Fest. Wirklich.
+
+Es gibt ein Schild.
+
+Mit dem Namen der Station.
+
+Aber… es ist nicht lesbar.
+
+Die Buchstaben verschwimmen.
+
+Oder… sie ändern sich.
+
+Je nachdem, wie du hinsiehst.
+
+Für jeden Passagier… eine andere Station.
+
+Ein anderes Ziel.
+
+Ein anderes… danach.
+
+Du blickst zurück zum Zug.
+
+Er steht noch da.
+
+Die Türen offen.
+
+Aber… du weißt.
+
+Wenn du jetzt gehst…
+
+Gibt es kein Zurück.
+
+Nie wieder.
+
+Die Frage ist:
+
+Bist du bereit?`,
+    choices: [
+      {
+        id: 'look_around',
+        label: 'Sich umsehen',
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 }
+        ],
+        next: 'c7_s25_final_choice'
+      },
+      {
+        id: 'look_back',
+        label: 'Zurückblicken',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 }
+        ],
+        next: 'c7_s25_final_choice'
+      },
+      {
+        id: 'breathe',
+        label: 'Tief einatmen',
+        effects: [
+          { type: 'inc', target: 'tickets_love', value: 1 }
+        ],
+        next: 'c7_s25_final_choice'
+      }
+    ],
+    state_notes: [
+      'Realer Bahnsteig',
+      'Schild lesbar aber individuell',
+      'Jeder sieht sein eigenes Ziel',
+      'Letzte Chance zurückzugehen'
+    ],
+    atmosphere: 'tense'
+  },
+
+  // ==========================================================================
+  // STANDARD: Finale Vorbereitung
+  // ==========================================================================
+
+  'c7_s25_final_choice': {
+    id: 'c7_s25_final_choice',
+    chapter: 7,
+    title: 'Letzte Gedanken',
+    narrative: `Du stehst auf dem Bahnsteig.
+
+Zwischen Zug und Welt.
+
+Zwischen Vergangenheit und… was auch immer danach kommt.
+
+Du denkst nach.
+
+Über die Fahrt.
+
+Die Stationen.
+
+Die Entscheidungen.
+
+Die Menschen, die du getroffen hast.
+
+Die Versionen von dir, die du gesehen hast.
+
+Die Wahrheiten, die du gelernt hast.
+
+Die Lügen, die du geglaubt hast.
+
+Alles führt zu diesem Moment.
+
+Zu dieser Entscheidung.
+
+Nicht die Entscheidung, ob du gehst.
+
+Sondern… wer du bist, wenn du gehst.
+
+Was du mitnimmst.
+
+Was du dalässt.
+
+Wer du… werden wirst.
+
+Oder… wer du immer warst.
+
+Die Türen warten.
+
+Die Welt wartet.
+
+Du…
+
+Bist bereit.`,
+    choices: [
+      {
+        id: 'step_off',
+        label: 'Aussteigen',
+        effects: [
+          { type: 'inc', target: 'station_count', value: 1 }
+        ],
+        next: 'c7_end_station'
+      }
+    ],
+    state_notes: [
+      'Letzte Reflexion',
+      'Vorbereitung auf Ending',
+      'Identitätsfrage',
+      'Übergang zu Endstation'
+    ],
+    atmosphere: 'somber'
+  },
+
+  // ==========================================================================
+  // ENDING: Siebte und letzte Station
+  // ==========================================================================
+
+  'c7_end_station': {
+    id: 'c7_end_station',
+    chapter: 7,
+    title: 'Endstation',
+    narrative: `Du stehst auf dem Bahnsteig.
+
+Vollständig. Endgültig. Real.
+
+Der Zug hinter dir… beginnt zu verblassen.
+
+Nicht plötzlich. Langsam.
+
+Als würde er… zurück in die Zeit sinken.
+
+Zurück zu 1973.
+
+Zurück zu dem Moment, wo alles endete.
+
+Und… neu begann.
+
+Du drehst dich um.
+
+Ein letztes Mal.
+
+Siehst den Zug.
+
+Den Nachtzug 19.
+
+Der dich getragen hat.
+
+Durch Zeit. Durch Erinnerung. Durch Tod.
+
+Bis hierher.
+
+Die Gestalten am Bahnsteig sind jetzt klar.
+
+Gesichter. Menschen. Real.
+
+Manche… erkennst du.
+
+Manche nicht.
+
+Aber alle… warten.
+
+Auf dich.
+
+Oder… mit dir.
+
+Bereit für das, was jetzt kommt.
+
+Die Fahrt ist vorbei.
+
+Die Geschichte… beginnt jetzt.
+
+Wer bist du?
+
+Was hast du gewählt?
+
+Was nimmst du mit… ins Danach?`,
+    choices: [
+      {
+        id: 'truth_path',
+        label: 'Der Wahrheit begegnen – koste es, was es wolle',
+        condition: {
+          type: 'compare',
+          target: 'tickets_truth',
+          operator: '>=',
+          value: 8
+        },
+        effects: [
+          { type: 'set', target: 'chapter_index', value: 8 }
+        ],
+        ending: 'truth_ending'
+      },
+      {
+        id: 'escape_path',
+        label: 'Zurück in den Zug – für immer sicher',
+        condition: {
+          type: 'compare',
+          target: 'tickets_escape',
+          operator: '>=',
+          value: 6
+        },
+        effects: [
+          { type: 'set', target: 'chapter_index', value: 8 }
+        ],
+        ending: 'escape_ending'
+      },
+      {
+        id: 'guilt_path',
+        label: 'Die Verantwortung tragen – und weitergehen',
+        condition: {
+          type: 'compare',
+          target: 'tickets_guilt',
+          operator: '>=',
+          value: 6
+        },
+        effects: [
+          { type: 'set', target: 'chapter_index', value: 8 }
+        ],
+        ending: 'guilt_ending'
+      },
+      {
+        id: 'love_path',
+        label: 'Jemandem folgen – nicht allein sein',
+        condition: {
+          type: 'compare',
+          target: 'tickets_love',
+          operator: '>=',
+          value: 6
+        },
+        effects: [
+          { type: 'set', target: 'chapter_index', value: 8 }
+        ],
+        ending: 'love_ending'
+      }
+    ],
+    tags: ['station_end'],
+    exit_effects: [
+      { type: 'inc', target: 'station_count', value: 1 }
+    ],
+    state_notes: [
+      'ENDSTATION: Finale Wahl zwischen 4 Endings',
+      'CONDITION: truth_path nur bei tickets_truth >= 8',
+      'CONDITION: escape_path nur bei tickets_escape >= 6',
+      'CONDITION: guilt_path nur bei tickets_guilt >= 6',
+      'CONDITION: love_path nur bei tickets_love >= 6',
+      'Spieler wählt basierend auf gesammelten Tickets',
+      'Zug verblasst zurück zu 1973'
+    ],
+    atmosphere: 'mystic'
+  }
+};

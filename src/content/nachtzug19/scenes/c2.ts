@@ -30,7 +30,11 @@ Du hast kein Ticket. Das wird zum Problem, wenn Kontrolle kommt. Und du weißt �
 
 Im nächsten Abteil sitzt ein Junge, vielleicht zwölf, mit Kopfhörern. Er hält einen alten Kassettenrekorder. Das Ding ist antik. Achtziger Jahre. Metallgehäuse, abgenutzte Tasten.
 
-Er bemerkt dich nicht. Oder tut so.`,
+Er bemerkt dich nicht. Oder tut so.
+
+Die Luft riecht nach kaltem Kaffee und Kunststoff. Unter deinen Schuhen ist der Boden klebrig, als haette jemand etwas verschuettet und es sei seit Stunden angetrocknet. Du hoerst das leise Surren des Rekorders unter dem Brummen des Zuges.
+
+Von weiter vorn kommt ein Metallklackern, als wuerde irgendwo eine Tuer einrasten. Kein Schritt, keine Stimme. Nur dieses kleine Geraeusch, das dich daran erinnert, dass Kontrolle nicht nur ein Geruecht ist.`,
     choices: [
       {
         id: 'ask_boy',
@@ -208,6 +212,21 @@ Das Licht flackert. Aus. An. Dein Spiegelbild ist näher. Viel näher.
 Dann geht das Licht aus.`,
     choices: [
       {
+        id: 'stare_back',
+        label: 'Dem Spiegelbild standhalten',
+        condition: {
+          type: 'compare',
+          target: 'memory_drift',
+          operator: '>=',
+          value: 2
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c2_s02_boy_recorder'
+      },
+      {
         id: 'continue',
         label: 'Rausgehen',
         effects: [
@@ -219,7 +238,7 @@ Dann geht das Licht aus.`,
     tags: ['drift_seed'],
     state_notes: [
       'Spiegelbild verzögert (wie in Kap. 1)',
-      'Interlude: sensorisch, kurz, keine Choices (außer weiter)'
+      'Interlude: sensorisch, kurz, optionaler Spiegel-Choice'
     ],
     atmosphere: 'danger'
   },
@@ -407,13 +426,29 @@ Jemand sitzt drin.`,
           { type: 'inc', target: 'tickets_love', value: 1 }
         ],
         next: 'c2_s03_comp7_intro'
+      },
+      {
+        id: 'question_reality',
+        label: 'Laut fragen: „Was passiert hier?"',
+        condition: {
+          type: 'compare',
+          target: 'memory_drift',
+          operator: '>=',
+          value: 1
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'conductor_attention', value: 1 }
+        ],
+        next: 'c2_interlude_02_window_dark'
       }
     ],
     tags: ['drift_variant'],
     state_notes: [
       'Gang ändert Länge: Kernmechanik von Drift (Raum ist instabil)',
       'Jackenfarbe des Schlaflosen ändert sich erneut (schwarz -> grün)',
-      'count_compartments erhöht memory_drift (Realität hinterfragen destabilisiert)'
+      'count_compartments erhöht memory_drift (Realität hinterfragen destabilisiert)',
+      'CONDITION: question_reality nur bei memory_drift >= 1'
     ],
     atmosphere: 'tense'
   },
@@ -500,6 +535,21 @@ Du springst zurück. Dein Herz rast.
 Als du wieder hinsiehst: Nur Schwärze. Nichts sonst.`,
     choices: [
       {
+        id: 'keep_staring',
+        label: 'Trotzdem hinschauen',
+        condition: {
+          type: 'compare',
+          target: 'memory_drift',
+          operator: '>=',
+          value: 2
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c2_s03_comp7_intro'
+      },
+      {
         id: 'continue',
         label: 'Weitergehen',
         effects: [
@@ -512,7 +562,7 @@ Als du wieder hinsiehst: Nur Schwärze. Nichts sonst.`,
     state_notes: [
       'Form mit Augen draußen (Halluzination oder nicht?)',
       'Warmes, feuchtes Glas (sensorische Anomalie)',
-      'Interlude: kurz, unheimlich, keine Handlungsoptionen'
+      'keep_staring nur bei memory_drift >= 2'
     ],
     atmosphere: 'danger'
   },
@@ -747,6 +797,15 @@ Alle Passagiere starren nach oben. Zu den Lautsprechern. Reglos.
 Dann bewegen sie sich wieder. Als wäre nichts gewesen.`,
     choices: [
       {
+        id: 'cover_ears',
+        label: 'Ohren zuhalten',
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 },
+          { type: 'dec', target: 'conductor_attention', value: 1 }
+        ],
+        next: 'c2_s04_announcement'
+      },
+      {
         id: 'continue',
         label: 'Weiter',
         effects: [
@@ -759,7 +818,7 @@ Dann bewegen sie sich wieder. Als wäre nichts gewesen.`,
     state_notes: [
       'Durchsage glitcht mit Spielerstimme (Memory-Echo)',
       'Passagiere frieren ein und bewegen sich wieder',
-      'Interlude: kurze Anomalie, automatischer memory_drift'
+      'cover_ears senkt attention, wenn bereits aufgebaut'
     ],
     atmosphere: 'danger'
   },
@@ -967,6 +1026,21 @@ Der Schaffner steht jetzt direkt vor dir.
 „Fahrkarten bitte."`,
     choices: [
       {
+        id: 'steady',
+        label: 'Ruhig bleiben',
+        condition: {
+          type: 'compare',
+          target: 'conductor_attention',
+          operator: '>=',
+          value: 2
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'dec', target: 'conductor_attention', value: 1 }
+        ],
+        next: 'c2_control_01_approach'
+      },
+      {
         id: 'continue',
         label: 'Kontrolle beginnt',
         effects: [
@@ -978,7 +1052,7 @@ Der Schaffner steht jetzt direkt vor dir.
     tags: ['drift_seed'],
     state_notes: [
       'Lichter gehen aus (Übergang zu Kontrolle)',
-      'Interlude: Spannungsaufbau, keine Optionen'
+      'steady nur bei conductor_attention >= 2'
     ],
     atmosphere: 'danger'
   },
@@ -1023,6 +1097,22 @@ Er stoppt. Wartet.`,
         next: 'c2_control_01_question'
       },
       {
+        id: 'look_to_sleepless',
+        label: 'Kurz zum Schlaflosen blicken',
+        condition: {
+          type: 'compare',
+          target: 'rel_sleepless',
+          operator: '>=',
+          value: 1
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_love', value: 1 },
+          { type: 'inc', target: 'rel_sleepless', value: 1 },
+          { type: 'dec', target: 'conductor_attention', value: 1 }
+        ],
+        next: 'c2_control_01_question'
+      },
+      {
         id: 'interrupt',
         label: '„Was bedeutet das?"',
         effects: [
@@ -1044,7 +1134,7 @@ Er stoppt. Wartet.`,
     state_notes: [
       'Set-Piece Teil 1: Aufbau der Kontrolle',
       'Kelle ist leer (Schaffner liest nicht ab, improvisiert)',
-      'interrupt erhöht conductor_attention (Unterbrechung = Respektlosigkeit)'
+      'interrupt erhöht conductor_attention, look_to_sleepless nur bei rel_sleepless >= 1'
     ],
     atmosphere: 'danger'
   },
@@ -1070,6 +1160,10 @@ Er beugt sich leicht vor.
 
 Seine Augen fixieren dich. Reglos.
 
+Du riechst kaltes Metall und etwas Strenges, als waere die Uniform frisch gereinigt. Seine Handschuhe sind glatt, ohne Falten. Du hoerst hinter dir keinen Atem, aber du spuerst ihn trotzdem.
+
+Die Zeit dehnt sich. Das Brummen des Zuges wird lauter, als wuerde der Wagen in diesem Moment tiefer fahren. Irgendwo klickt eine Lampe, und der Schatten der Kelle wandert ueber deine Haende.
+
 „Warum sind Sie hier?"`,
     choices: [
       {
@@ -1094,14 +1188,6 @@ Seine Augen fixieren dich. Reglos.
         label: '„Ich musste weg."',
         effects: [
           { type: 'inc', target: 'tickets_escape', value: 2 }
-        ],
-        next: 'c2_control_01_aftermath'
-      },
-      {
-        id: 'offer_guilt',
-        label: '„Ich habe etwas getan. Etwas Falsches."',
-        effects: [
-          { type: 'inc', target: 'tickets_guilt', value: 2 }
         ],
         next: 'c2_control_01_aftermath'
       },
@@ -1224,6 +1310,10 @@ Er zeigt auf die anderen Passagiere. „Sie auch nicht. Niemand hier ist real. N
 
 Er lächelt. Trocken. Ohne Humor.
 
+Seine Stimme ist rau, als haette er zu viel Rauch geschluckt. Er reibt den Daumen ueber den Stoff seiner Jacke, als koenne er die Farbe festhalten. Das Material knistert, als waere es zu trocken.
+
+Er nickt in Richtung der Fenster. Draussen gleitet die Schwärze vorbei wie Wasser, aber ohne Glanz. „Wenn du einmal etwas festhalten willst," sagt er, „nimm ein Detail. Nicht den ganzen Zug. Nur einen Kratzer, einen Geruch."
+
 „Der Zug erfindet uns neu. Jedes Mal. Kleine Änderungen. Große Änderungen. Bis wir vergessen, wer wir waren."
 
 Er lehnt sich zurück. „Aber du kämpfst dagegen an. Deshalb bist du hier."`,
@@ -1234,6 +1324,21 @@ Er lehnt sich zurück. „Aber du kämpfst dagegen an. Deshalb bist du hier."`,
         effects: [
           { type: 'inc', target: 'tickets_truth', value: 1 },
           { type: 'inc', target: 'rel_sleepless', value: 2 }
+        ],
+        next: 'c2_interlude_05_vibration'
+      },
+      {
+        id: 'ask_for_anchor',
+        label: '„Sag mir, was sich nicht aendert."',
+        condition: {
+          type: 'compare',
+          target: 'rel_sleepless',
+          operator: '>=',
+          value: 2
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'rel_sleepless', value: 1 }
         ],
         next: 'c2_interlude_05_vibration'
       },
@@ -1251,7 +1356,7 @@ Er lehnt sich zurück. „Aber du kämpfst dagegen an. Deshalb bist du hier."`,
     state_notes: [
       'Condition: Nur sichtbar wenn confront_sleepless gewählt',
       'Sleepless erklärt Drift-Mechanik ("Zug erfindet uns neu")',
-      'accept_truth: Starke Beziehung (+2), Truth-Path',
+      'accept_truth/ask_for_anchor: Truth-Path, bindet rel_sleepless',
       'reject_truth: Escape-Pattern, Beziehung verschlechtert'
     ],
     atmosphere: 'somber'
@@ -1339,6 +1444,21 @@ Dann, plötzlich: Stille.
 Der Zug hält.`,
     choices: [
       {
+        id: 'steady_breath',
+        label: 'Atem zählen',
+        condition: {
+          type: 'compare',
+          target: 'memory_drift',
+          operator: '>=',
+          value: 2
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_escape', value: 1 },
+          { type: 'dec', target: 'conductor_attention', value: 1 }
+        ],
+        next: 'c2_end_platform_watch'
+      },
+      {
         id: 'continue',
         label: 'Zur Station',
         effects: [
@@ -1351,7 +1471,7 @@ Der Zug hält.`,
     state_notes: [
       'Vibration im Kopf/Knochen (somatische Anomalie)',
       'Metall pulsiert warm (Material lebendig)',
-      'Interlude: Übergang zu Station, keine Optionen'
+      'steady_breath nur bei memory_drift >= 2'
     ],
     atmosphere: 'tense'
   },
@@ -1401,13 +1521,30 @@ Der Zug fährt weiter.`,
           { type: 'inc', target: 'tickets_escape', value: 1 }
         ],
         next: 'c2_end_station'
+      },
+      {
+        id: 'recognize_figure',
+        label: 'Versuchen, die Gestalt zu erkennen',
+        condition: {
+          type: 'or',
+          conditions: [
+            { type: 'compare', target: 'rel_comp7', operator: '>=', value: 2 },
+            { type: 'compare', target: 'tickets_truth', operator: '>=', value: 4 }
+          ]
+        },
+        effects: [
+          { type: 'inc', target: 'tickets_truth', value: 1 },
+          { type: 'inc', target: 'memory_drift', value: 1 }
+        ],
+        next: 'c2_end_station'
       }
     ],
     tags: [],
     state_notes: [
       'Gestalt auf Bahnsteig (wer? Spieler? Comp7? Schaffner?)',
       'Uhr zeigt wieder 23:47 (Zeit-Loop)',
-      'tell_others erhöht conductor_attention (Lautstärke)'
+      'tell_others erhöht conductor_attention (Lautstärke)',
+      'CONDITION: recognize_figure nur bei rel_comp7 >= 2 ODER tickets_truth >= 4'
     ],
     atmosphere: 'mystic'
   },
@@ -1439,6 +1576,22 @@ Sie zeigt auf eine Zeile:
 
 „Spieler hat Kontrolle 1 überstanden. Geht weiter zu Kapitel 3."`,
     choices: [
+      {
+        id: 'play_recorder',
+        label: 'Die Aufnahme vorspielen',
+        condition: {
+          type: 'bool',
+          target: 'has_recorder',
+          value: true
+        },
+        effects: [
+          { type: 'set', target: 'chapter_index', value: 3 },
+          { type: 'inc', target: 'station_count', value: 1 },
+          { type: 'inc', target: 'memory_drift', value: 1 },
+          { type: 'inc', target: 'rel_comp7', value: 1 }
+        ],
+        next: 'c3_s01_wagen7_locked'
+      },
       {
         id: 'continue_to_chapter_3',
         label: 'Weiter',

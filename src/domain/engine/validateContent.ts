@@ -11,7 +11,9 @@ import {
   Scene,
   Choice,
   Condition,
+  Effect,
   EffectTarget,
+  EffectType,
   ScenesCollection,
   EndingsCollection,
   ValidationError,
@@ -19,7 +21,7 @@ import {
 } from '../types';
 
 // ============================================================================
-// Known Effect Targets (alle erlaubten Variablen)
+// Known Effect Targets & Types
 // ============================================================================
 
 const KNOWN_EFFECT_TARGETS: Set<EffectTarget> = new Set([
@@ -37,6 +39,10 @@ const KNOWN_EFFECT_TARGETS: Set<EffectTarget> = new Set([
   'chapter_index', 'station_count'
 ]);
 
+const KNOWN_EFFECT_TYPES: Set<EffectType> = new Set([
+  'inc', 'dec', 'set', 'clamp'
+]);
+
 // ============================================================================
 // Validation Helpers
 // ============================================================================
@@ -46,6 +52,13 @@ const KNOWN_EFFECT_TARGETS: Set<EffectTarget> = new Set([
  */
 function validateEffectTarget(target: string): boolean {
   return KNOWN_EFFECT_TARGETS.has(target as EffectTarget);
+}
+
+/**
+ * Prüft, ob ein Effect-Type bekannt ist
+ */
+function validateEffectType(type: string): boolean {
+  return KNOWN_EFFECT_TYPES.has(type as EffectType);
 }
 
 /**
@@ -66,6 +79,18 @@ function getConditionTargets(condition: Condition): string[] {
 }
 
 /**
+ * Zählt "starke" Effects (inc/dec mit value > 1, oder mehrere effects)
+ */
+function countStrongEffects(effects: Effect[]): number {
+  return effects.filter(e => {
+    if (e.type === 'inc' || e.type === 'dec') {
+      return typeof e.value === 'number' && Math.abs(e.value) > 1;
+    }
+    return true; // set, clamp zählen als strong
+  }).length;
+}
+
+/**
  * Prüft eine einzelne Choice
  */
 function validateChoice(
@@ -76,11 +101,13 @@ function validateChoice(
   errors: ValidationError[],
   warnings: ValidationError[]
 ): void {
+  const choiceLabel = choice.id || choice.text || 'unknown';
+
   // 1. Choice muss entweder 'next' oder 'ending' haben
   if (!choice.next && !choice.ending) {
     errors.push({
       type: 'error',
-      message: `Choice '${choice.id}' hat weder 'next' noch 'ending'`,
+      message: `Choice '${choiceLabel}' hat weder 'next' noch 'ending'`,
       scene_id: sceneId,
       choice_id: choice.id
     });
@@ -90,7 +117,7 @@ function validateChoice(
   if (choice.next && !scenes[choice.next]) {
     errors.push({
       type: 'error',
-      message: `Choice '${choice.id}' verweist auf unbekannte Szene '${choice.next}'`,
+      message: `Choice '${choiceLabel}' verweist auf unbekannte Szene '${choice.next}'`,
       scene_id: sceneId,
       choice_id: choice.id
     });
@@ -100,7 +127,7 @@ function validateChoice(
   if (choice.ending && !endings[choice.ending]) {
     errors.push({
       type: 'error',
-      message: `Choice '${choice.id}' verweist auf unbekanntes Ending '${choice.ending}'`,
+      message: `Choice '${choiceLabel}' verweist auf unbekanntes Ending '${choice.ending}'`,
       scene_id: sceneId,
       choice_id: choice.id
     });
@@ -114,7 +141,7 @@ function validateChoice(
   if (!hasEffects && !hasLegacyEffects) {
     warnings.push({
       type: 'warning',
-      message: `Choice '${choice.id || choice.text}' hat keine Effects (könnte R3: Callback-Regel verletzen)`,
+      message: `Choice '${choiceLabel}' hat keine Effects (könnte R3: Callback-Regel verletzen)`,
       scene_id: sceneId,
       choice_id: choice.id || choice.text
     });
@@ -123,10 +150,21 @@ function validateChoice(
   // 5. Alle Effects müssen bekannte Targets verwenden
   if (choice.effects) {
     choice.effects.forEach((effect, idx) => {
+      // Prüfe Effect-Type
+      if (!validateEffectType(effect.type)) {
+        errors.push({
+          type: 'error',
+          message: `Choice '${choiceLabel}' Effect #${idx}: Unbekannter Effect-Type '${effect.type}' (erlaubt: inc/dec/set/clamp)`,
+          scene_id: sceneId,
+          choice_id: choice.id
+        });
+      }
+
+      // Prüfe Target
       if (!validateEffectTarget(effect.target)) {
         errors.push({
           type: 'error',
-          message: `Choice '${choice.id}' Effect #${idx}: Unbekanntes Target '${effect.target}'`,
+          message: `Choice '${choiceLabel}' Effect #${idx}: Unbekanntes Target '${effect.target}'`,
           scene_id: sceneId,
           choice_id: choice.id
         });
@@ -136,7 +174,7 @@ function validateChoice(
       if (effect.type === 'clamp' && (effect.clamp_min === undefined || effect.clamp_max === undefined)) {
         warnings.push({
           type: 'warning',
-          message: `Choice '${choice.id}' Effect #${idx}: clamp ohne clamp_min/clamp_max`,
+          message: `Choice '${choiceLabel}' Effect #${idx}: clamp ohne clamp_min/clamp_max`,
           scene_id: sceneId,
           choice_id: choice.id
         });
@@ -151,7 +189,7 @@ function validateChoice(
       if (!validateEffectTarget(target)) {
         errors.push({
           type: 'error',
-          message: `Choice '${choice.id}' Condition: Unbekanntes Target '${target}'`,
+          message: `Choice '${choiceLabel}' Condition: Unbekanntes Target '${target}'`,
           scene_id: sceneId,
           choice_id: choice.id
         });
@@ -197,6 +235,13 @@ function validateScene(
   // 4. Entry/Exit-Effects müssen bekannte Targets verwenden
   if (scene.entry_effects) {
     scene.entry_effects.forEach((effect, idx) => {
+      if (!validateEffectType(effect.type)) {
+        errors.push({
+          type: 'error',
+          message: `Entry-Effect #${idx}: Unbekannter Effect-Type '${effect.type}'`,
+          scene_id: scene.id
+        });
+      }
       if (!validateEffectTarget(effect.target)) {
         errors.push({
           type: 'error',
@@ -209,6 +254,13 @@ function validateScene(
 
   if (scene.exit_effects) {
     scene.exit_effects.forEach((effect, idx) => {
+      if (!validateEffectType(effect.type)) {
+        errors.push({
+          type: 'error',
+          message: `Exit-Effect #${idx}: Unbekannter Effect-Type '${effect.type}'`,
+          scene_id: scene.id
+        });
+      }
       if (!validateEffectTarget(effect.target)) {
         errors.push({
           type: 'error',
@@ -219,20 +271,92 @@ function validateScene(
     });
   }
 
-  // 5. R1: station_end muss memory_drift erhöhen (wird automatisch von Engine gemacht)
-  // Warnung, wenn station_end-Szene keine exit_effects hat (wird aber automatisch gehandhabt)
-  if (scene.tags?.includes('station_end')) {
-    // Optional: Prüfe, ob exit_effects memory_drift erhöhen
-    // (Nicht nötig, da Engine das automatisch macht)
-  }
-
-  // 6. state_notes sollte maximal 3 Einträge haben
+  // 5. state_notes sollte maximal 3 Einträge haben
   if (scene.state_notes && scene.state_notes.length > 3) {
     warnings.push({
       type: 'warning',
       message: `Szene '${scene.id}' hat ${scene.state_notes.length} state_notes (max. 3 empfohlen)`,
       scene_id: scene.id
     });
+  }
+
+  // 6. Warnung: Szene hat viele/starke Effects, aber keine state_notes
+  const allEffects = [
+    ...(scene.entry_effects || []),
+    ...(scene.exit_effects || []),
+    ...scene.choices.flatMap(c => c.effects || [])
+  ];
+
+  if (allEffects.length > 2) {
+    const strongEffects = countStrongEffects(allEffects);
+    if (strongEffects >= 2 && (!scene.state_notes || scene.state_notes.length === 0)) {
+      warnings.push({
+        type: 'warning',
+        message: `Szene '${scene.id}' hat ${strongEffects} starke Effects, aber keine state_notes (Callback-Dokumentation fehlt)`,
+        scene_id: scene.id
+      });
+    }
+  }
+}
+
+/**
+ * Prüft auf Duplikate bei Scene IDs
+ */
+function validateUniqueness(
+  scenes: ScenesCollection,
+  errors: ValidationError[]
+): void {
+  const idCounts = new Map<string, number>();
+
+  Object.keys(scenes).forEach(id => {
+    idCounts.set(id, (idCounts.get(id) || 0) + 1);
+  });
+
+  idCounts.forEach((count, id) => {
+    if (count > 1) {
+      errors.push({
+        type: 'error',
+        message: `Duplikate Scene ID '${id}' (${count}x vorhanden)`,
+        scene_id: id
+      });
+    }
+  });
+}
+
+/**
+ * Prüft R1: Jedes Kapitel muss mind. 1 station_end haben
+ */
+function validateCanonRuleR1(
+  scenes: ScenesCollection,
+  errors: ValidationError[],
+  warnings: ValidationError[]
+): void {
+  const chapterStationEnds: Record<number, number> = {};
+
+  // Zähle station_end-Szenen pro Kapitel
+  Object.values(scenes).forEach(scene => {
+    if (scene.tags?.includes('station_end') && scene.chapter !== undefined) {
+      const chapter = scene.chapter;
+      chapterStationEnds[chapter] = (chapterStationEnds[chapter] || 0) + 1;
+    }
+  });
+
+  // Prüfe jedes Kapitel (1-7)
+  for (let chapter = 1; chapter <= 7; chapter++) {
+    const count = chapterStationEnds[chapter] || 0;
+    if (count === 0) {
+      errors.push({
+        type: 'error',
+        message: `R1 verletzt: Kapitel ${chapter} hat keine station_end-Szene`,
+        location: `chapter_${chapter}`
+      });
+    } else if (count > 1) {
+      warnings.push({
+        type: 'warning',
+        message: `Kapitel ${chapter} hat ${count} station_end-Szenen (normalerweise 1)`,
+        location: `chapter_${chapter}`
+      });
+    }
   }
 }
 
@@ -331,6 +455,93 @@ function validateNoDeadEnds(
   });
 }
 
+/**
+ * Prüft auf potenzielle Endlosloops (SCCs ohne Exit)
+ * Verwendet Tarjan's Algorithm für SCC-Detection
+ */
+function validateNoInfiniteLoops(
+  scenes: ScenesCollection,
+  warnings: ValidationError[]
+): void {
+  // Tarjan's Algorithm für SCC
+  let index = 0;
+  const stack: string[] = [];
+  const indices = new Map<string, number>();
+  const lowlinks = new Map<string, number>();
+  const onStack = new Set<string>();
+  const sccs: string[][] = [];
+
+  function strongconnect(sceneId: string): void {
+    indices.set(sceneId, index);
+    lowlinks.set(sceneId, index);
+    index++;
+    stack.push(sceneId);
+    onStack.add(sceneId);
+
+    const scene = scenes[sceneId];
+    if (!scene) return;
+
+    scene.choices.forEach(choice => {
+      if (!choice.next) return;
+      const nextId = choice.next;
+
+      if (!indices.has(nextId)) {
+        strongconnect(nextId);
+        lowlinks.set(sceneId, Math.min(lowlinks.get(sceneId)!, lowlinks.get(nextId)!));
+      } else if (onStack.has(nextId)) {
+        lowlinks.set(sceneId, Math.min(lowlinks.get(sceneId)!, indices.get(nextId)!));
+      }
+    });
+
+    if (lowlinks.get(sceneId) === indices.get(sceneId)) {
+      const scc: string[] = [];
+      let w: string;
+      do {
+        w = stack.pop()!;
+        onStack.delete(w);
+        scc.push(w);
+      } while (w !== sceneId);
+
+      if (scc.length > 1) {
+        sccs.push(scc);
+      }
+    }
+  }
+
+  // Finde alle SCCs
+  Object.keys(scenes).forEach(sceneId => {
+    if (!indices.has(sceneId)) {
+      strongconnect(sceneId);
+    }
+  });
+
+  // Prüfe SCCs auf Exits
+  sccs.forEach(scc => {
+    const sccSet = new Set(scc);
+    let hasExit = false;
+
+    // Prüfe, ob es einen Ausgang aus der SCC gibt
+    scc.forEach(sceneId => {
+      const scene = scenes[sceneId];
+      scene.choices.forEach(choice => {
+        if (choice.ending) {
+          hasExit = true;
+        } else if (choice.next && !sccSet.has(choice.next)) {
+          hasExit = true;
+        }
+      });
+    });
+
+    if (!hasExit) {
+      warnings.push({
+        type: 'warning',
+        message: `Potenzielle Endlosschleife erkannt: ${scc.join(', ')} (SCC ohne Ausgang)`,
+        location: 'graph'
+      });
+    }
+  });
+}
+
 // ============================================================================
 // Main Validation Function
 // ============================================================================
@@ -356,19 +567,28 @@ export function validateContent(
     return { valid: false, errors, warnings };
   }
 
-  // 2. Prüfe jede Szene einzeln
+  // 2. Prüfe auf Duplikate bei Scene IDs
+  validateUniqueness(scenes, errors);
+
+  // 3. Prüfe jede Szene einzeln
   Object.values(scenes).forEach(scene => {
     validateScene(scene, scenes, endings, errors, warnings);
   });
 
-  // 3. Prüfe Canon Rule R2 (Kontrollen in Kap. 2/3/5)
+  // 4. Prüfe Canon Rule R1 (mind. 1 station_end pro Kapitel)
+  validateCanonRuleR1(scenes, errors, warnings);
+
+  // 5. Prüfe Canon Rule R2 (Kontrollen in Kap. 2/3/5)
   validateCanonRuleR2(scenes, errors);
 
-  // 4. Prüfe Erreichbarkeit
+  // 6. Prüfe Erreichbarkeit
   validateReachability(startSceneId, scenes, warnings);
 
-  // 5. Prüfe auf Dead-Ends
+  // 7. Prüfe auf Dead-Ends
   validateNoDeadEnds(scenes, endings, errors);
+
+  // 8. Prüfe auf Endlosloops
+  validateNoInfiniteLoops(scenes, warnings);
 
   // Ergebnis
   const valid = errors.length === 0;

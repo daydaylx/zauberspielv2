@@ -1,105 +1,44 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { GameEngine } from './gameEngine'
-import { scenes, initialStats } from '../../content/legacy/storyData'
+import { describe, it, expect, beforeAll } from 'vitest';
+import { loadNachtzug19Story, StoryBundle } from './loadStory';
+import { createInitialState } from '../types';
+import { getAvailableChoices, transitionToNextScene } from './gameEngine';
 
-describe('GameEngine Core', () => {
-  let engine: GameEngine;
+let bundle: StoryBundle;
 
-  beforeEach(() => {
-    engine = new GameEngine();
-    engine.startGame();
-  });
-
-  it('should initialize with start scene', () => {
-    expect(engine.getState().currentSceneId).toBe('P0_Intro');
-    expect(engine.getState().stats).toEqual(initialStats);
-  });
-
-  it('should update stats when making a choice', () => {
-    const startScene = scenes['P0_Intro'];
-    const choice = startScene.choices[0]; // "Amulett betrachten" -> Wissen +1
-
-    engine.makeChoice(choice);
-
-    expect(engine.getState().stats.wissen).toBe(1);
-    expect(engine.getState().stats.empathie).toBe(0);
-  });
-
-  it('should transition to next scene', () => {
-    const startScene = scenes['P0_Intro'];
-    const choice = startScene.choices[0]; // -> P1_ankunft
-
-    engine.makeChoice(choice);
-
-    expect(engine.getState().currentSceneId).toBe('P1_ankunft');
-    expect(engine.getState().history).toContain('P0_Intro');
-  });
-
-  it('should handle game over', () => {
-    const endingChoice = {
-        text: "Test Ending",
-        beschreibungFolge: "Test",
-        naechsteSzeneId: "E1_RETTUNG_VERLUST"
-    };
-
-    engine.makeChoice(endingChoice);
-
-    expect(engine.getState().isGameOver).toBe(true);
-    expect(engine.getState().endingId).toBe("E1_RETTUNG_VERLUST");
-  });
+beforeAll(async () => {
+  bundle = await loadNachtzug19Story();
 });
 
-describe('New Story Features', () => {
-  let engine: GameEngine;
-
-  beforeEach(() => {
-    engine = new GameEngine();
-    engine.startGame();
+describe('NACHTZUG 19 engine integration', () => {
+  it('loads the story and resolves the start scene', () => {
+    expect(bundle.startSceneId).toBeTruthy();
+    expect(bundle.scenes[bundle.startSceneId]).toBeTruthy();
   });
 
-  it('should allow finding the secret sketch in the Scriptorium', () => {
-    // Manuell in die neue Szene springen
-    engine.getState().currentSceneId = 'K1_skriptorium_extra';
-    
-    const scene = scenes['K1_skriptorium_extra'];
-    const searchChoice = scene.choices.find(c => c.text.includes("Unter Liras Tisch"));
-    
-    if (!searchChoice) throw new Error("Choice 'Unter Liras Tisch' not found");
+  it('applies choice effects and moves to the next scene', () => {
+    const state = createInitialState(bundle.startSceneId);
+    const scene = bundle.scenes[state.current_scene_id];
+    const choice = scene.choices.find((entry) => entry.id === 'try_leave');
 
-    engine.makeChoice(searchChoice);
+    if (!choice || !choice.next) {
+      throw new Error('Expected try_leave choice with next scene');
+    }
 
-    expect(engine.getState().inventory).toContain("Skizze des Schachts");
-    expect(engine.getState().currentSceneId).toBe("K1_campus_wahl");
+    transitionToNextScene(state, scene, choice, bundle.scenes);
+
+    expect(state.current_scene_id).toBe(choice.next);
+    expect(state.tickets.tickets_guilt).toBe(1);
+    expect(state.pressure.conductor_attention).toBe(1);
   });
 
-  it('should allow the loyalty oath (Schwur) in K2', () => {
-    // Manuell kurz vor das Finale springen
-    engine.getState().currentSceneId = 'K2_geister_nachklang';
-    
-    const scene = scenes['K2_geister_nachklang'];
-    const oathChoice = scene.choices.find(c => c.text.includes("Schwur leisten"));
-    
-    if (!oathChoice) throw new Error("Choice 'Schwur leisten' not found");
+  it('hides choices when conditions are not met', () => {
+    const state = createInitialState(bundle.startSceneId);
+    const scene = bundle.scenes['c1_interlude_02_silence'];
+    const hiddenChoice = scene.choices.find((entry) => entry.id === 'stay_quiet');
+    const available = getAvailableChoices(state, scene);
 
-    engine.makeChoice(oathChoice);
-
-    expect(engine.getState().flags.loyalty_max).toBe(true);
-    expect(engine.getState().stats.empathie).toBeGreaterThanOrEqual(2); // +2 Empathie
-  });
-
-  it('should reveal the secret weakness when freeing the ghost', () => {
-    // Manuell zum Geist springen
-    engine.getState().currentSceneId = 'K2_geisterraum';
-    
-    const scene = scenes['K2_geisterraum'];
-    const freeChoice = scene.choices.find(c => c.text.includes("Ihn lösen"));
-    
-    if (!freeChoice) throw new Error("Choice 'Ihn lösen' not found");
-
-    engine.makeChoice(freeChoice);
-
-    expect(engine.getState().flags.geist_befreit).toBe(true);
-    expect(engine.getState().flags.knows_secret_weakness).toBe(true); // Der neue Hinweis
-    expect(engine.getState().currentSceneId).toBe("K2_geister_nachklang");
+    expect(hiddenChoice).toBeTruthy();
+    if (!hiddenChoice) return;
+    expect(available).not.toContain(hiddenChoice);
   });
 });

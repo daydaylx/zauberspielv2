@@ -10,11 +10,13 @@ import { HeaderBar } from '../ui/components/HeaderBar';
 import { OverlayMenu } from '../ui/components/OverlayMenu';
 import { AtmosphereEffects } from '../ui/components/AtmosphereEffects';
 import { DebugOverlay } from '../ui/components/DebugOverlay';
+import { DebugPlayer } from '../ui/debug';
 
 function App() {
   const [engine, setEngine] = useState<GameEngine | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [view, setView] = useState<'story-select' | 'start' | 'game' | 'ending'>('story-select');
+  const [storyBundle, setStoryBundle] = useState<StoryBundle | null>(null);
+  const [view, setView] = useState<'story-select' | 'start' | 'game' | 'ending' | 'debug'>('story-select');
   const [selectedStory, setSelectedStory] = useState<'nachtzug19' | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +40,7 @@ function App() {
   }, [engine]);
 
   // Load Story
-  const handleSelectStory = async () => {
+  const handleSelectStory = async (nextView: 'start' | 'debug' = 'start') => {
     setIsLoading(true);
     try {
       const storyBundle = await loadNachtzug19Story();
@@ -66,7 +68,8 @@ function App() {
       setEngine(newEngine);
       setGameState(newEngine.getState());
       setSelectedStory('nachtzug19');
-      setView('start');
+      setStoryBundle(storyBundle);
+      setView(nextView);
     } catch (error) {
       console.error('[App] Failed to load story:', error);
       alert('Fehler beim Laden der Story. Siehe Konsole für Details.');
@@ -87,6 +90,14 @@ function App() {
     setView('game');
   };
 
+  const handleOpenDebug = () => {
+    if (storyBundle) {
+      setView('debug');
+      return;
+    }
+    handleSelectStory('debug');
+  };
+
   const handleSettingChange = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
@@ -95,6 +106,15 @@ function App() {
   const currentScene = engine?.getCurrentScene() || null;
   const currentEnding = engine?.getEnding() || null;
   const availableChoices = engine?.getAvailableChoices() || [];
+
+  if (view === 'debug') {
+    return (
+      <DebugPlayer
+        storyBundle={storyBundle}
+        onExit={() => setView('start')}
+      />
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-midnight text-ink overflow-hidden relative font-serif selection:bg-accent selection:text-midnight">
@@ -150,7 +170,11 @@ function App() {
         )}
 
         {view === 'start' && (
-            <StartScreen onStart={handleStart} onSettings={() => setIsMenuOpen(true)} />
+            <StartScreen
+              onStart={handleStart}
+              onSettings={() => setIsMenuOpen(true)}
+              onDebug={handleOpenDebug}
+            />
         )}
 
         {view === 'game' && currentScene && engine && gameState && (
