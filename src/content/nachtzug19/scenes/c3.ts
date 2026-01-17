@@ -988,6 +988,53 @@ Aber du erkennst die Kleidung. Deine Kleidung.
 Am Rand des Fotos liegt ein zweiter Schatten, versetzt. Er passt nicht zu dem Licht. Als hätte noch jemand dort gestanden, den die Linse nicht zeigen will.
 
 „Du bist schon mal hier gewesen," sagt Comp7.`,
+    narrative_variants: [
+      {
+        min_drift: 3,
+        narrative: `Du gehst zu den Notizbüchern.
+
+Jedes ist aufgeschlagen. Aber die Buchstaben bewegen sich.
+
+Sie krabbeln über das Papier wie Ameisen. Formen neue Wörter, während du zusiehst.
+
+„Passagier #12: Tot. Lebendig. Tot."
+
+„Passagier #7: Vergisst. Erinnert sich. Vergisst."
+
+Die Handschrift ändert sich mit jedem Satz. Mal krakelig, mal elegant. Mal ist es deine eigene.
+
+Ein Eintrag ist in roter Tinte geschrieben. Oder Blut. Er trocknet nicht.
+
+Ein Notizbuch zeigt ein Foto. Das Foto bewegt sich. Ganz leicht. Die Person darauf dreht den Kopf zu dir.
+
+Du erkennst dich selbst. Aber die Augen sind leer.
+
+„Wir schreiben die Geschichte neu," sagt Comp7.
+„Jedes Mal."`
+      },
+      {
+        min_drift: 5,
+        narrative: `Du gehst zu den Notizbüchern.
+
+Aber da sind keine Bücher mehr. Nur Haut.
+
+Die Wände sind bespannt mit pergamentartiger Haut, auf die jemand Text tätowiert hat.
+
+„HILFE" steht da. Tausendmal. Klein.
+
+Dann: „KEIN AUSGANG."
+
+Die Buchstaben bluten. Schwarze Tinte läuft an der Wand herunter.
+
+Comp7 steht daneben und schreibt direkt auf die Wand. Ihr Stift schneidet in das Material.
+
+Ein Foto hängt an einem Nagel. Es zeigt keinen Bahnsteig. Es zeigt ein Grab.
+
+Auf dem Grabstein steht dein Name. Das Datum ist heute.
+
+„Das ist das Ende vom letzten Mal," sagt Comp7. „Versuch es besser zu machen."`
+      }
+    ],
     choices: [
       {
         id: 'ask_when',
@@ -1584,7 +1631,7 @@ Seine Stimme ist tiefer. Mechanischer. „Oder Sie können nichts geben. Dann ko
     title: 'Kontrolle - Nachwirkung',
     narrative: `Der Schaffner bleibt stehen. Bewegt sich nicht.
 
-„Sie haben gegeben," sagt er. „Aber nicht genug."
+„Die Antwort ist notiert," sagt er. „Aber sie reicht nicht."
 
 Seine Kelle kratzt leise, als würde er eine unsichtbare Notiz machen, obwohl er sich nicht bewegt.
 
