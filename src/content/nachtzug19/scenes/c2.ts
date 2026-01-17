@@ -533,6 +533,48 @@ Es hat Augen.
 Du springst zurück. Dein Herz rast.
 
 Als du wieder hinsiehst: Nur Schwärze. Nichts sonst.`,
+    narrative_variants: [
+      {
+        min_drift: 3,
+        narrative: `Du gehst ans Fenster.
+
+Draußen: Dunkelheit. Keine Landschaft. Keine Lichter. Nur Schwarz.
+
+Aber jetzt siehst du etwas. Strukturen. Formen.
+
+Ein Gebäude? Nein. Zu organisch. Es pulsiert.
+
+Du drückst dein Gesicht ans Glas. Das Glas ist warm. Klamm.
+
+Die Form draußen bewegt sich. Kommt näher.
+
+Es hat ein Auge.
+
+Du springst zurück. Dein Herz rast.
+
+Als du wieder hinsiehst: Nur Schwärze. Nichts sonst.`
+      },
+      {
+        min_drift: 5,
+        narrative: `Du gehst ans Fenster.
+
+Draußen: Grau. Kein Schwarz. Keine Lichter. Nur ein milchiger Schimmer.
+
+Aber jetzt siehst du etwas. Strukturen. Formen.
+
+Ein Gebäude? Nein. Zu organisch. Es bewegt sich.
+
+Du drückst dein Gesicht ans Glas. Das Glas ist kalt. Trocken.
+
+Die Form draußen bewegt sich. Kommt sehr nah.
+
+Es hat drei Augen.
+
+Du springst zurück. Dein Herz rast.
+
+Als du wieder hinsiehst: Nur Grau. Und ein heller Streifen.`
+      }
+    ],
     choices: [
       {
         id: 'keep_staring',
@@ -1024,6 +1066,42 @@ Dann geht das Licht wieder an.
 Der Schaffner steht jetzt direkt vor dir.
 
 „Fahrkarten bitte."`,
+    narrative_variants: [
+      {
+        min_drift: 3,
+        narrative: `Die Lichter gehen aus.
+
+Alle. Auf einmal.
+
+Komplette Dunkelheit. Nur ein schwacher Notstreifen glimmt.
+
+Du hörst die Schritte des Schaffners. Näher. Näher.
+
+Dann flackert das Licht wieder an.
+
+Der Schaffner steht jetzt direkt vor dir.
+
+„Fahrkarten bitte."`
+      },
+      {
+        min_drift: 5,
+        narrative: `Die Lichter gehen aus.
+
+Alle. Auf einmal.
+
+Komplette Dunkelheit.
+
+Du hörst keine Schritte. Nur ein Klacken direkt hinter dir.
+
+Dann geht das Licht wieder an.
+
+Der Schaffner steht nicht vor dir.
+
+Er steht neben dir.
+
+„Fahrkarten bitte."`
+      }
+    ],
     choices: [
       {
         id: 'steady',
@@ -1608,12 +1686,9 @@ Sie zeigt auf eine Zeile:
       { type: 'inc', target: 'memory_drift', value: 1 }
     ],
     state_notes: [
-      'Zweite station_end: memory_drift +1 (R1: Stationen verursachen Drift)',
-      'Sleepless-Position verschoben, Jacke wechselt (rot -> schwarz)',
-      'Junge verschwunden (Callback aus Kap. 2 Anfang)',
-      'Comp7 Gesicht wird klarer (Drift stabilisiert sich?)',
-      'Meta-Hinweis: Comp7 schreibt "Spieler geht zu Kapitel 3"',
-      'Übergang zu Kapitel 3: c3_s01_wagen7_locked'
+      'Zweite station_end: memory_drift +1 (R1)',
+      'Drift-Effects: Sleepless/Jacke verändert, Junge weg, Comp7 klarer',
+      'Meta-Hinweis: Comp7 schreibt "Spieler geht zu Kapitel 3"'
     ],
     atmosphere: 'somber'
   }

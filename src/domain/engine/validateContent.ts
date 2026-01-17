@@ -271,11 +271,11 @@ function validateScene(
     });
   }
 
-  // 5. state_notes sollte maximal 3 Einträge haben
-  if (scene.state_notes && scene.state_notes.length > 3) {
+  // 5. state_notes sollte maximal 5 Einträge haben
+  if (scene.state_notes && scene.state_notes.length > 5) {
     warnings.push({
       type: 'warning',
-      message: `Szene '${scene.id}' hat ${scene.state_notes.length} state_notes (max. 3 empfohlen)`,
+      message: `Szene '${scene.id}' hat ${scene.state_notes.length} state_notes (max. 5 empfohlen)`,
       scene_id: scene.id
     });
   }
