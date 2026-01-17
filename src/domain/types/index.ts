@@ -227,6 +227,15 @@ export type Choice = {
 };
 
 /**
+ * Narrative Variant - Drift-basierte Textvariante
+ */
+export type NarrativeVariant = {
+  min_drift: number;              // Ab welchem memory_drift diese Variante gilt
+  narrative: string;              // Alternative Narrative
+  replace_mode?: 'full' | 'overlay';  // Default: 'full' (komplette Ersetzung)
+};
+
+/**
  * Scene - Eine Szene im Spiel
  */
 export type Scene = {
@@ -238,6 +247,7 @@ export type Scene = {
   chapter?: number;              // Kapitel 1-7
   title?: string;                // Kurztitel
   narrative?: string;            // Haupt-Text (3-12 Absätze)
+  narrative_variants?: NarrativeVariant[];  // Drift-basierte Textvarianten
   tags?: SceneTag[];             // Optional: station_end, control, reveal, etc.
   state_notes?: string[];        // Max 3 Callback-Hinweise
   entry_effects?: Effect[];      // Effects beim Betreten
