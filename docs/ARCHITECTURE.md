@@ -24,26 +24,40 @@ src/
 │   │   ├── StartScreen.tsx
 │   │   ├── AtmosphereEffects.tsx
 │   │   ├── TypewriterText.tsx
+│   │   ├── DebugOverlay.tsx
 │   │   └── *.test.tsx     # Component Tests
 │   │
 │   ├── layout/            # Layout Components
 │   │   └── BookLayout.tsx
 │   │
-│   └── hooks/             # React Hooks
-│       └── useTypewriter.ts
+│   ├── hooks/             # React Hooks
+│   │   └── useTypewriter.ts
+│   │
+│   └── debug/             # Debug Tools
+│       └── DebugPlayer.tsx
 │
 ├── domain/                 # Business Logic (Framework-agnostic)
 │   ├── engine/            # Game Engine
-│   │   ├── gameEngine.ts  # Core Game Logic
-│   │   ├── gameEngine.test.ts
-│   │   └── index.ts       # Barrel Export
+│   │   ├── gameEngine.ts      # Core Game Logic
+│   │   ├── validateContent.ts # Content Validation (Graph Invariants)
+│   │   ├── loadStory.ts       # Story Loader
+│   │   ├── gameEngine.test.ts # Engine Tests
+│   │   └── index.ts           # Barrel Export
 │   │
 │   └── types/             # TypeScript Type Definitions
 │       └── index.ts       # All Game Types
 │
 └── content/                # Story Content & Data
-    └── legacy/            # Veraltete Story (Schattenbibliothek)
-        └── storyData.ts   # Legacy-Implementation (entfernt)
+    └── nachtzug19/        # 🚂 NACHTZUG 19 (Main Story)
+        ├── manifest.ts    # Chapter Overview + Entry Point
+        └── scenes/        # Scenes organized by chapter
+            ├── c1.ts      # Chapter 1: Leerer Bahnsteig (24 scenes)
+            ├── c2.ts      # Chapter 2: Die erste Kontrolle (25 scenes)
+            ├── c3.ts      # Chapter 3: Wagen 7 (27 scenes)
+            ├── c4.ts      # Chapter 4: Spiegelungen (26 scenes)
+            ├── c5.ts      # Chapter 5: Die letzte Kontrolle (25 scenes)
+            ├── c6.ts      # Chapter 6: Ende der Linie (26 scenes)
+            └── c7.ts      # Chapter 7: Entscheidung (26 scenes)
 ```
 
 ## Layer-Verantwortlichkeiten
@@ -79,6 +93,9 @@ src/
 - Event-basierte Kommunikation (`onMakeChoice`, `onRestart`)
 - Conditional Rendering basiert auf Props, nicht auf internem State
 
+**Debug-Tools**:
+- `ui/debug/DebugPlayer.tsx` – Entwicklungs-Tool für Content-Entwicklung (State-Inspektion, Szenen-Navigation)
+
 ---
 
 ### 3. Domain Layer (`src/domain/`)
@@ -92,6 +109,15 @@ src/
   - Save/Load Logic
   - Observer Pattern (Subscribe/Notify)
 
+- **`validateContent.ts`**: Content Validation
+  - Graph-Invarianten (keine Dead-Ends, fehlende Referenzen)
+  - Canon Rules Prüfung (station_end, control, callbacks)
+  - Schema-Validierung für Scenes/Choices
+
+- **`loadStory.ts`**: Story Loader
+  - Dynamisches Story-Wechseln (zukünftig)
+  - Content-Import-Verwaltung
+
 - **`index.ts`**: Barrel Export für saubere Imports
 
 **Wichtig**:
@@ -103,7 +129,7 @@ src/
 #### 3.2 Types (`domain/types/`)
 - **`index.ts`**: Alle TypeScript-Typen
   - `GameState`, `Scene`, `Choice`, `Ending`
-  - `PlayerStats`, `Flags`
+  - `PlayerStats`, `Flags`, `Manifest`, `Effect`, `Condition`
   - Type Guards & Utilities
 
 **Shared across all layers** (App, UI, Domain, Content)
@@ -113,33 +139,27 @@ src/
 ### 4. Content Layer (`src/content/`)
 **Zweck**: Story-Daten, Kapitel, Szenen, Dialoge
 
-#### 4.1 Legacy (`content/legacy/`)
-- **`storyData.ts`**: Veraltete Story (Schattenbibliothek von Nareth)
-  - Scene Definitions
-  - Endings
-  - Initial Stats
-  - **Status**: Entfernt. Wurde als Referenz-Implementation verwendet.
-
-#### 4.2 NACHTZUG 19 (`content/nachtzug19/`) – **Haupt-Projekt**
-Neue Story-Implementation nach strikten Canon Rules (siehe `NACHTZUG_19_RULES.md`):
+#### 4.1 NACHTZUG 19 (`content/nachtzug19/`) – **Main Project**
+Story-Implementation nach strikten Canon Rules (siehe `NACHTZUG_19_RULES.md`):
 
 ```
 content/nachtzug19/
 ├── manifest.ts       # Kapitelübersicht, Einstiegsszene, Initial State
-├── scenes/           # Szenen organisiert nach Kapiteln
-│   ├── chapter1.ts   # Kapitel 1: Der Bahnsteig ohne Name
-│   ├── chapter2.ts   # Kapitel 2: Die Fahrkarten
-│   ├── ...
-│   └── chapter7.ts   # Kapitel 7: Endstation (Enden A/B/C)
-├── endings.ts        # Ende-Definitionen
-└── validators.ts     # Content-Validierung (Graph-Invarianten)
+└── scenes/           # Szenen organisiert nach Kapiteln
+    ├── c1.ts         # Kapitel 1: Der Bahnsteig ohne Name (24 Szenen)
+    ├── c2.ts         # Kapitel 2: Die Fahrkarten (25 Szenen)
+    ├── c3.ts         # Kapitel 3: Wagen 7 (27 Szenen)
+    ├── c4.ts         # Kapitel 4: Spiegelungen (26 Szenen)
+    ├── c5.ts         # Kapitel 5: Die letzte Kontrolle (25 Szenen)
+    ├── c6.ts         # Kapitel 6: Ende der Linie (26 Szenen)
+    └── c7.ts         # Kapitel 7: Endstation (26 Szenen)
 ```
 
 **Wichtig**:
 - Keine Engine-Logik (nur Daten)
 - Keine UI-Komponenten
 - Exportiert plain Objects/Arrays
-- Validierung durch `validators.ts` (siehe Abschnitt 7 in `NACHTZUG_19_RULES.md`)
+- Validierung durch `validateContent.ts` (siehe Abschnitt 7 in `NACHTZUG_19_RULES.md`)
 
 ---
 
@@ -164,7 +184,7 @@ content/nachtzug19/
               │        └──────────────────┘
               ▼
 ┌──────────────────┐
-│   content/legacy │
+│content/nachtzug19│
 │                  │
 │  Imports: NONE   │
 │  (pure data)     │
@@ -194,7 +214,7 @@ content/nachtzug19/
    - UI-Redesigns berühren keine Logik
 
 3. **Austauschbarkeit**:
-   - Story kann gewechselt werden (legacy → nachtzug19)
+   - Story kann gewechselt werden
    - UI-Framework könnte gewechselt werden (React → Vue)
    - Engine könnte für andere Projekte wiederverwendet werden
 
@@ -219,7 +239,7 @@ import { Scene, Choice } from '../../domain/types';
 
 // gameEngine.ts
 import { GameState, Scene } from '../types';
-import { scenes } from '../../content/legacy/storyData';
+import { chapter1Scenes } from '../../content/nachtzug19/scenes/c1';
 ```
 
 ### ❌ Schlecht
@@ -246,7 +266,14 @@ import { GameEngine } from '../../domain/engine'; // ❌
 - App-Level: Game Flow (Start → Choice → Ending)
 
 ### Content Validation
-- Schema-Validation für `storyData.ts` (sicherstellen, dass alle `naechsteSzeneId` existieren)
+- Schema-Validation für Content (siehe `validateContent.ts`)
+- Graph-Invarianten: Alle `next`-Referenzen existieren, keine Dead-Ends ohne `ending`, etc.
+- Canon Rules: station_end vorhanden, control in Kap. 2/3/5, etc.
+
+### Content Audit
+- **Script**: `scripts/audit_chapters.mjs`
+- Prüft: Szenenzahl, Wortanzahl, Spielzeit-Schätzung, Canon Rules
+- Zielwerte: 22–28 Szenen, 5.000–6.500 Wörter, 30–35 Minuten Spielzeit pro Kapitel
 
 ---
 
@@ -255,7 +282,6 @@ import { GameEngine } from '../../domain/engine'; // ❌
 ### Alte Struktur → Neue Struktur
 - `src/gameEngine.ts` → `src/domain/engine/gameEngine.ts`
 - `src/types.ts` → `src/domain/types/index.ts`
-- `src/storyData.ts` → `src/content/legacy/storyData.ts`
 - `src/components/` → `src/ui/components/`
 - `src/layout/` → `src/ui/layout/`
 - `src/hooks/` → `src/ui/hooks/`
@@ -270,38 +296,32 @@ Siehe `docs/CHANGELOG.md` für Details.
 
 ### ✅ Abgeschlossen
 - Content/Domain/UI Separation implementiert
-- Legacy-Story "Schattenbibliothek von Nareth" entfernt
-- Game Engine mit Stats, Flags, Inventory
+- Game Engine mit Stats, Tickets, Pressure, Relations
 - UI-Komponenten (Book Layout, Typewriter, Atmosphere Effects)
+- Debug Player für Content-Entwicklung (`ui/debug/DebugPlayer.tsx`)
 - Test-Setup (Vitest)
+- **NACHTZUG 19: Alle 7 Kapitel vollständig implementiert** (~179 Szenen, ~12.000 Zeilen Content)
 
-### 🚧 In Entwicklung: NACHTZUG 19
-- Content-Struktur nach `NACHTZUG_19_RULES.md`
-- State-Modell erweitert (Tickets, Memory Drift, Conductor Attention)
-- Graph-Validierung für Content (Dead-Ends, Referenzen, Canon Rules)
-- Kapitel 1–2 als MVP (10–14 Szenen, Kontrolle 1, Station-Ende 1)
+### 🚧 In Arbeit
+- Graph-Validierung für vollständigen Content-Graph (Kapitel 1–7)
+- Drift-Mechanik: Textvarianten ab `memory_drift >= 3`
+- Callback-Validierung (jede Choice hat späteres Echo)
 
 ### 📋 Geplant
-1. **Content-Validierung**:
-   - Schema für Scenes/Choices/Effects
-   - Automatische Tests für Story-Konsistenz (Graph-Invarianten)
-   - Linter für unbekannte Flags, fehlende Effects
-
-2. **Engine-Erweiterungen**:
-   - Effects-System (inc, dec, set, clamp)
-   - Condition-Parser (validierbare Mini-Sprache)
-   - Content-Loader für dynamisches Story-Wechseln
-
-3. **Drift-Mechanik**:
-   - Textvarianten ab `memory_drift >= 3`
+1. **Content-Erweiterung**:
+   - Drift-Textvarianten für alle Kapitel
    - UI-Glitches ab `memory_drift >= 5`
 
-4. **Testing**:
+2. **Engine-Erweiterungen**:
+   - Condition-Parser (erweiterte Syntax für komplexe Bedingungen)
+   - Content-Loader für dynamisches Story-Wechseln
+
+3. **Testing**:
    - Story-Path-Tests (alle Enden erreichbar?)
-   - Callback-Validierung (jede Choice hat Rückwirkung?)
+   - Performance-Tests für große Content-Graphen
 
 ---
 
-**Architektur-Version**: 1.0
-**Letzte Änderung**: 2026-01-13
-**Autor**: Refactoring-Migration (Content/Domain/UI Separation)
+**Architektur-Version**: 1.1
+**Letzte Änderung**: 2026-01-17
+**Autor**: Content/Domain/UI Separation Migration
