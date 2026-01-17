@@ -515,7 +515,16 @@ export class GameEngine {
       const key = this.STORAGE_KEY_PREFIX + slot;
       const saved = localStorage.getItem(key);
       if (saved) {
-        this.state = JSON.parse(saved);
+        const parsed = JSON.parse(saved) as GameState;
+        if (
+          !parsed ||
+          typeof parsed.save_version !== 'number' ||
+          parsed.save_version !== this.state.save_version
+        ) {
+          console.warn(`[Load] Save version mismatch: ${key}`);
+          return false;
+        }
+        this.state = parsed;
         this.notify();
         console.log(`[Load] Spielstand geladen: ${key}`);
         return true;

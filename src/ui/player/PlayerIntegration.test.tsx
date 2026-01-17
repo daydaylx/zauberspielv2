@@ -1,7 +1,8 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import { PlayerScreen } from './PlayerScreen';
-import { createInitialState } from '../../../domain/types';
+import { createInitialState } from '../../domain/types';
 
 const mockScene = {
   id: 'test_scene',
@@ -31,11 +32,12 @@ describe('PlayerScreen', () => {
         onChoice={() => {}}
         settings={mockSettings}
         onUpdateSettings={() => {}}
+        onExit={() => {}}
       />
     );
 
-    expect(screen.getByText('This is a test story.')).toBeInTheDocument();
-    expect(screen.getByText('Paragraph 2.')).toBeInTheDocument();
+    expect(screen.getByText('This is a test story.')).toBeTruthy();
+    expect(screen.getByText('Paragraph 2.')).toBeTruthy();
   });
 
   it('renders choice buttons', () => {
@@ -47,15 +49,17 @@ describe('PlayerScreen', () => {
         onChoice={() => {}}
         settings={mockSettings}
         onUpdateSettings={() => {}}
+        onExit={() => {}}
       />
     );
 
-    expect(screen.getByText('Go Left')).toBeInTheDocument();
-    expect(screen.getByText('Go Right')).toBeInTheDocument();
+    expect(screen.getByText('Go Left')).toBeTruthy();
+    expect(screen.getByText('Go Right')).toBeTruthy();
   });
 
   it('calls onChoice when button is clicked', () => {
-    const handleChoice = jest.fn();
+    vi.useFakeTimers();
+    const handleChoice = vi.fn();
     render(
       <PlayerScreen 
         scene={mockScene}
@@ -64,17 +68,17 @@ describe('PlayerScreen', () => {
         onChoice={handleChoice}
         settings={mockSettings}
         onUpdateSettings={() => {}}
+        onExit={() => {}}
       />
     );
 
     fireEvent.click(screen.getByText('Go Left'));
-    
-    // Note: The component has a delay, so we might need waitFor in a real async test,
-    // but typically Jest handles simple timeouts if not using real timers.
-    // However, PlayerScreen uses setTimeout. Let's fast-forward or just check if it was called (requires timer mock).
-    // For simplicity here, we assume immediate click or skip timer logic in unit test setup.
-    // Since I didn't set up Jest timers, this assertion might fail if I check immediately and the component delays.
-    // I'll skip the assertion on the delayed call for this minimal test to avoid flake,
-    // or just check rendering.
+
+    act(() => {
+      vi.advanceTimersByTime(250);
+    });
+
+    expect(handleChoice).toHaveBeenCalledWith(mockScene.choices[0]);
+    vi.useRealTimers();
   });
 });

@@ -6,17 +6,29 @@ interface ReaderCardProps {
   scene: Scene;
   textSize: TextSize;
   driftEnabled: boolean;
+  reduceMotion: boolean;
+  bottomPadding?: number;
 }
 
-export const ReaderCard: React.FC<ReaderCardProps> = ({ scene, textSize, driftEnabled }) => {
+export const ReaderCard: React.FC<ReaderCardProps> = ({
+  scene,
+  textSize,
+  driftEnabled,
+  reduceMotion,
+  bottomPadding
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Scroll reset
   useEffect(() => {
     if (containerRef.current) {
-      containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      if (typeof containerRef.current.scrollTo === 'function') {
+        containerRef.current.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      } else {
+        containerRef.current.scrollTop = 0;
+      }
     }
-  }, [scene.id]);
+  }, [scene.id, reduceMotion]);
 
   const getTextStyles = () => {
     switch (textSize) {
@@ -28,6 +40,7 @@ export const ReaderCard: React.FC<ReaderCardProps> = ({ scene, textSize, driftEn
 
   const paragraphs = scene.narrative ? scene.narrative.split('\n\n') : [scene.beschreibung || ""];
   const styles = getTextStyles();
+  const paddingBottom = typeof bottomPadding === 'number' ? bottomPadding + 32 : 192;
 
   return (
     <div className="relative flex-1 min-h-0 w-full md:max-w-3xl md:mx-auto z-10">
@@ -39,7 +52,7 @@ export const ReaderCard: React.FC<ReaderCardProps> = ({ scene, textSize, driftEn
         ref={containerRef}
         className="h-full overflow-y-auto noir-scroll px-6 py-8 md:px-12"
       >
-        <div className="max-w-prose mx-auto pb-48 space-y-6">
+        <div className="max-w-prose mx-auto space-y-6" style={{ paddingBottom }}>
            {/* Title as gentle header */}
            {scene.title && (
              <div className="text-center mb-8 opacity-40 font-mono text-xs uppercase tracking-[0.2em] border-b border-stone-800 pb-2">

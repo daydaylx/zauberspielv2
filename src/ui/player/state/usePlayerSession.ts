@@ -95,7 +95,11 @@ export function usePlayerSession() {
   // Check if save exists
   const hasSaveGame = useCallback(() => {
     // Basic check without actually loading
-    return !!localStorage.getItem('nachtzug19_save_auto');
+    try {
+      return !!localStorage.getItem('nachtzug19_save_auto');
+    } catch {
+      return false;
+    }
   }, []);
 
   return {

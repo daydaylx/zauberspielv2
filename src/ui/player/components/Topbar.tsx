@@ -4,10 +4,11 @@ import { GameState } from '../../../domain/types';
 interface TopbarProps {
   gameState: GameState | null;
   onToggleStatus: () => void;
+  onToggleSettings: () => void;
   showStatus: boolean;
 }
 
-export const Topbar: React.FC<TopbarProps> = ({ gameState, onToggleStatus, showStatus }) => {
+export const Topbar: React.FC<TopbarProps> = ({ gameState, onToggleStatus, onToggleSettings, showStatus }) => {
   const chapter = gameState ? gameState.chapter_index : 0;
   
   // Fake Time based on drift/progress? Or just static noir time
@@ -17,8 +18,17 @@ export const Topbar: React.FC<TopbarProps> = ({ gameState, onToggleStatus, showS
     <header className="fixed top-0 inset-x-0 h-14 bg-stone-950/90 backdrop-blur-sm border-b border-stone-800 flex items-center justify-between px-4 z-30 select-none">
       
       {/* Chapter */}
-      <div className="text-stone-500 font-mono text-sm tracking-widest w-20">
-        K{chapter}
+      <div className="flex items-center gap-2 w-24">
+        <button
+          onClick={onToggleSettings}
+          aria-label="Einstellungen"
+          className="text-stone-500 hover:text-amber-500/80 transition-colors text-sm"
+        >
+          ⚙︎
+        </button>
+        <div className="text-stone-500 font-mono text-sm tracking-widest">
+          K{chapter}
+        </div>
       </div>
 
       {/* Title */}
@@ -27,7 +37,7 @@ export const Topbar: React.FC<TopbarProps> = ({ gameState, onToggleStatus, showS
       </div>
 
       {/* Status Toggle / Time */}
-      <div className="w-20 flex justify-end">
+      <div className="w-24 flex justify-end">
         {showStatus ? (
           <button 
             onClick={onToggleStatus}

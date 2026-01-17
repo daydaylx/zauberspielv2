@@ -23,12 +23,13 @@ export const PlayerApp: React.FC<PlayerAppProps> = ({ onExit }) => {
   
   const { settings, updateSetting } = usePlayerSettings();
   const [started, setStarted] = useState(false);
+  const rootMotionClass = settings.reduceMotion ? 'reduce-motion' : '';
 
   // Loading Screen
   if (isLoading) {
     return (
-      <div className="w-full h-screen bg-stone-950 flex items-center justify-center relative overflow-hidden">
-        <div className="noise-overlay" />
+      <div className={`w-full h-screen bg-stone-950 flex items-center justify-center relative overflow-hidden ${rootMotionClass}`}>
+        {settings.immersionFx && !settings.reduceMotion && <div className="noise-overlay" />}
         <div className="text-amber-600/60 font-mono animate-pulse tracking-[0.5em] text-sm uppercase">
           Verbindung zum Zugsystem...
         </div>
@@ -39,8 +40,8 @@ export const PlayerApp: React.FC<PlayerAppProps> = ({ onExit }) => {
   // Error Screen
   if (error) {
     return (
-      <div className="w-full h-screen bg-stone-950 flex flex-col items-center justify-center text-red-400 p-8 text-center relative font-mono">
-        <div className="noise-overlay opacity-20" />
+      <div className={`w-full h-screen bg-stone-950 flex flex-col items-center justify-center text-red-400 p-8 text-center relative font-mono ${rootMotionClass}`}>
+        {settings.immersionFx && !settings.reduceMotion && <div className="noise-overlay opacity-20" />}
         <div className="border border-red-900/50 bg-red-950/10 p-8 max-w-md backdrop-blur-sm relative z-10">
           <h1 className="text-xl font-bold mb-4 tracking-widest uppercase border-b border-red-900/50 pb-2">Fatal Error</h1>
           <p className="mb-8 text-sm opacity-80">{error}</p>
@@ -58,10 +59,10 @@ export const PlayerApp: React.FC<PlayerAppProps> = ({ onExit }) => {
   // Start / Menu Screen
   if (!started) {
     return (
-      <div className="w-full h-screen bg-stone-950 flex flex-col items-center justify-center text-stone-200 relative overflow-hidden">
+      <div className={`w-full h-screen bg-stone-950 flex flex-col items-center justify-center text-stone-200 relative overflow-hidden ${rootMotionClass}`}>
         {/* Background Atmosphere */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-stone-900 via-stone-950 to-black" />
-        <div className="noise-overlay" />
+        {settings.immersionFx && !settings.reduceMotion && <div className="noise-overlay" />}
         <div className="vignette fixed inset-0 pointer-events-none" />
         
         {/* Main Content */}
@@ -131,8 +132,8 @@ export const PlayerApp: React.FC<PlayerAppProps> = ({ onExit }) => {
   // Game Over
   if (gameState.isGameOver) {
       return (
-          <div className="w-full h-screen bg-stone-950 flex flex-col items-center justify-center text-stone-200 p-8 text-center animate-in fade-in duration-1000 relative">
-               <div className="noise-overlay" />
+          <div className={`w-full h-screen bg-stone-950 flex flex-col items-center justify-center text-stone-200 p-8 text-center animate-in fade-in duration-1000 relative ${rootMotionClass}`}>
+               {settings.immersionFx && !settings.reduceMotion && <div className="noise-overlay" />}
                <h2 className="text-4xl font-serif text-amber-600 mb-6 tracking-widest uppercase drop-shadow-lg">Endstation</h2>
                <div className="h-px w-16 bg-stone-700 mx-auto mb-8"></div>
                <p className="max-w-prose mb-12 font-serif leading-loose text-lg text-stone-300/80 italic">
@@ -156,6 +157,7 @@ export const PlayerApp: React.FC<PlayerAppProps> = ({ onExit }) => {
       onChoice={makeChoice}
       settings={settings}
       onUpdateSettings={updateSetting}
+      onExit={onExit}
     />
   );
 };

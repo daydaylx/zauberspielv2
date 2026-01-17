@@ -1,21 +1,43 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Choice } from '../../../domain/types';
 
 interface ChoiceTrayProps {
   choices: Choice[];
   onChoose: (choice: Choice) => void;
   isProcessing: boolean;
+  onHeightChange?: (height: number) => void;
 }
 
-export const ChoiceTray: React.FC<ChoiceTrayProps> = ({ choices, onChoose, isProcessing }) => {
+export const ChoiceTray: React.FC<ChoiceTrayProps> = ({
+  choices,
+  onChoose,
+  isProcessing,
+  onHeightChange
+}) => {
   if (choices.length === 0) return null;
+
+  const trayRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!onHeightChange) return;
+    const node = trayRef.current;
+    if (!node) return;
+
+    const update = () => onHeightChange(node.offsetHeight);
+    update();
+
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [choices.length, onHeightChange]);
 
   return (
     <div className="fixed bottom-0 inset-x-0 z-30 pointer-events-none flex flex-col items-center">
       {/* Gradient Fade from Content to Tray */}
       <div className="w-full h-24 bg-gradient-to-t from-stone-950 via-stone-950/90 to-transparent absolute bottom-0 inset-x-0" />
 
-      <div className="w-full max-w-lg px-4 pb-6 space-y-3 pointer-events-auto relative z-10">
+      <div ref={trayRef} className="w-full max-w-lg px-4 pb-6 space-y-3 pointer-events-auto relative z-10">
         {choices.map((choice, idx) => (
           <button
             key={idx}

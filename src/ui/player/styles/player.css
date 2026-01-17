@@ -125,3 +125,14 @@
 .animate-station {
   animation: stationFlash 2.5s ease-out forwards;
 }
+
+/* --- REDUCE MOTION OVERRIDES --- */
+.reduce-motion * {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+.reduce-motion .noise-overlay {
+  animation: none !important;
+}

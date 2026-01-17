@@ -24,14 +24,20 @@ export function usePlayerSettings() {
   const [settings, setSettings] = useState<PlayerSettings>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+      if (!saved) return DEFAULT_SETTINGS;
+      const parsed = JSON.parse(saved) as Partial<PlayerSettings>;
+      return { ...DEFAULT_SETTINGS, ...parsed };
     } catch {
       return DEFAULT_SETTINGS;
     }
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    } catch {
+      // Ignore storage write errors (private mode/quota)
+    }
   }, [settings]);
 
   const updateSetting = <K extends keyof PlayerSettings>(key: K, value: PlayerSettings[K]) => {
