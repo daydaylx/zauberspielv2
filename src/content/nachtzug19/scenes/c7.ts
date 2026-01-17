@@ -550,6 +550,68 @@ Dein Sitz.
 Die Lautsprecher kreischen.
 
 Dann – Stille.`,
+    narrative_variants: [
+      {
+        min_drift: 3,
+        narrative: `Die Lautsprecher knistern.
+
+Leise. Dann laut. Wie ein Schrei.
+
+Dann – eine Stimme.
+
+„Nächster Halt. Endstation."
+
+Die Stimme ist… deine eigene.
+
+„Bitte alle… aussteigen."
+
+Knistern.
+
+„Alle… die überlebt haben."
+
+Die Stimme stoppt.
+
+Dann:
+
+„Passagier in Wagen 7, Sitz 19."
+
+Du.
+
+„Ankunft… vor 50 Jahren."
+
+„Am 19. September 1973."
+
+Die Lautsprecher bluten. Schwarze Tropfen fallen herab.
+
+Dann – Stille.`
+      },
+      {
+        min_drift: 5,
+        narrative: `Die Lautsprecher explodieren nicht. Sie flüstern.
+
+Direkt in deinem Kopf.
+
+„Endstation."
+
+„Du bist schon da."
+
+„Seit immer."
+
+Knistern.
+
+„Wagen 7, Sitz 19."
+
+„Todesursache: Aufprall."
+
+„Zeitpunkt: 19:19 Uhr."
+
+„Status: Verweigert."
+
+Die Stimme lacht.
+
+„Willkommen zuhause.`
+      }
+    ],
     choices: [
       {
         id: 'realize_truth_high_drift',
